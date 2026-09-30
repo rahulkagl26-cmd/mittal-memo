@@ -1,0 +1,2930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f3a5f">
+<title>Mittal Traders – Cash Memo</title>
+<style>
+:root{
+  --bg:#f1f3f6; --card:#fff; --ink:#18212b; --muted:#65717e; --line:#dce1e7;
+  --brand:#1f3a5f; --brand2:#2d5a8e; --ok:#1e7a46; --okbg:#e7f5ec; --warn:#a86200; --warnbg:#fff4e0;
+  --bad:#b3261e; --badbg:#fdecea; --mic:#c62828; --cur:#e6effb; --dockH:190px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:16px}
+button,input,select{font:inherit;color:inherit}
+input{font-size:16px}
+[hidden]{display:none!important}
+
+/* ---------- header + tabs ---------- */
+header{background:var(--brand);color:#fff;position:sticky;top:0;z-index:8}
+.hd{display:flex;align-items:center;gap:8px;padding:8px 12px 6px;max-width:760px;margin:0 auto}
+.hd .t{flex:1;min-width:0}
+.hd h1{margin:0;font-size:16px;letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd small{opacity:.8;font-size:12px}
+.hd .no{font-size:11.5px;text-align:right;line-height:1.25;opacity:.95}
+.icon{background:none;border:0;color:#fff;font-size:21px;padding:6px;cursor:pointer;line-height:1}
+.tabs{display:flex;max-width:760px;margin:0 auto}
+.tabs button{flex:1;background:none;border:0;color:#cfd9e6;padding:8px 4px 9px;font-size:14px;font-weight:600;border-bottom:3px solid transparent;cursor:pointer}
+.tabs button.sel{color:#fff;border-bottom-color:#8fc1ff}
+
+main{max-width:760px;margin:0 auto;padding:10px 12px}
+#tabBill{padding-bottom:calc(var(--dockH) + 20px)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.lb{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+.row{display:flex;gap:8px;align-items:center}
+.inp{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;min-width:0}
+.inp:focus{outline:2px solid var(--brand2);outline-offset:-1px;border-color:transparent}
+.smic{flex:0 0 46px;height:44px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer}
+.smic.on{background:var(--mic);color:#fff;border-color:var(--mic)}
+.note{font-size:12px;color:var(--muted);margin-top:5px;min-height:15px;word-break:break-word}
+.btn{white-space:nowrap;border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:600;font-size:15px;min-height:44px}
+.btn.pri{background:var(--ok);color:#fff}
+.btn.blue{background:var(--brand2);color:#fff}
+.btn.sec{background:#e6eaf0}
+.btn.red{background:var(--badbg);color:var(--bad)}
+.btn.sm{padding:7px 11px;min-height:36px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.lnk{background:none;border:0;color:var(--brand2);cursor:pointer;padding:6px;font-size:14px;font-weight:600}
+.chip{display:inline-block;border:1px solid var(--brand2);color:var(--brand2);background:#fff;border-radius:16px;padding:5px 11px;margin:5px 6px 0 0;font-size:13.5px;cursor:pointer}
+.chip.sel{background:var(--brand2);color:#fff}
+.chip.g{border-color:var(--ok);color:var(--ok)}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:18px 8px}
+
+/* ---------- autocomplete ---------- */
+.acw{position:relative;flex:1;min-width:0}
+.sug{position:absolute;left:0;right:0;top:100%;z-index:15;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 6px 18px rgba(0,0,0,.14);margin-top:3px;overflow:hidden}
+.sug button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;border-top:1px solid #eef1f4;background:#fff;padding:10px;cursor:pointer;font-size:15px}
+.sug button:first-child{border-top:0}
+.sug button span{color:var(--muted);font-size:12.5px;white-space:nowrap}
+
+/* ---------- item rows ---------- */
+.lh{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 6px}
+.lh h2{font-size:15px;margin:0}
+.it{background:#fff;border:1px solid var(--line);border-radius:11px;margin-bottom:7px;scroll-margin-top:110px;scroll-margin-bottom:calc(var(--dockH) + 12px)}
+.it.flag{border-color:#e5b567;background:var(--warnbg)}
+.it.rerr{border-color:#e39a95}
+.it.cur{border:2px solid var(--brand2);background:var(--cur)}
+.it.new{animation:nw 1.2s}
+@keyframes nw{0%{background:#fff7c2}}
+.sum{display:flex;gap:8px;align-items:center;padding:9px 10px;cursor:pointer}
+.sum .sl{flex:0 0 22px;color:var(--muted);font-weight:600;font-size:14px;text-align:center}
+.sum .mid{flex:1;min-width:0}
+.sum .nm{font-weight:600;font-size:15.5px;line-height:1.25;word-break:break-word}
+.sum .sb{font-size:13.5px;color:var(--muted);margin-top:2px}
+.sum .sb b{color:var(--ink);font-weight:600}
+.sum .sb .miss{color:var(--bad);font-weight:600}
+.sum .am{font-weight:700;white-space:nowrap;font-size:15px}
+.sum .am.na{color:var(--muted);font-weight:400;font-size:13px}
+.iss{padding:0 10px 8px 40px;font-size:12.5px;line-height:1.4}
+.iss .e{color:var(--bad)} .iss .w{color:var(--warn)}
+.ed{border-top:1px dashed var(--line);padding:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.g3 label{font-size:12px;color:var(--muted)}
+.ubtn{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;text-align:left;cursor:pointer;min-height:44px}
+.inp.bad,.ubtn.bad{border-color:var(--bad);background:var(--badbg)}
+.inp.chk,.ubtn.chk{border-color:var(--warn);background:#fffaf0}
+.hl{font-size:12px;color:var(--muted);margin-top:8px;word-break:break-word}
+.acts{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;margin-top:8px}
+.acts button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:14px;min-height:38px}
+.acts .okb{border-color:var(--ok);color:var(--ok);font-weight:600}
+.acts .del{color:var(--bad)}
+.acts .done{background:var(--brand2);color:#fff;border-color:var(--brand2);font-weight:600}
+
+/* ---------- dock (always visible on Bill tab) ---------- */
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:7;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.07);padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+#dock .in{max-width:760px;margin:0 auto}
+.live{background:#f7f9fb;border:1px dashed #b9c3ce;border-radius:9px;padding:6px 9px;margin-bottom:7px;min-height:44px}
+.live.on{border:2px solid var(--mic);background:#fff}
+.live .h1{font-size:16px;line-height:1.3;word-break:break-word}
+.live .h1 .ph{color:var(--muted);font-size:14px}
+.live .h1 b{color:var(--brand2)}
+.live .h1 i{color:var(--muted)}
+.live .h2{font-size:13px;margin-top:2px;line-height:1.3;word-break:break-word}
+.h2.ok{color:var(--ok)} .h2.warn{color:var(--warn)} .h2.bad{color:var(--bad)}
+.live .lg{float:right;background:none;border:0;color:var(--brand2);font-size:12px;cursor:pointer;padding:0 0 0 6px}
+.rbox{background:var(--cur);border:2px solid var(--brand2);border-radius:10px;padding:8px;margin-bottom:7px}
+.rbox .rq{font-size:15px;line-height:1.3}
+.rbox .rq small{color:var(--muted);font-size:12.5px}
+.rrow{display:flex;gap:6px;margin-top:6px;align-items:center}
+.rrow .rs{font-weight:700;font-size:18px}
+.rrow .inp{font-size:20px;font-weight:600;padding:8px 10px;flex:1;width:auto}
+.rrow .btn,.rrow .chip{white-space:nowrap;margin:0;flex:0 0 auto}
+.rbtns{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center}
+.rbtns button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 9px;font-size:13.5px;cursor:pointer;min-height:36px}
+.rbtns .stop{color:var(--bad)}
+.rbtns .left{margin-left:auto;font-size:13px;font-weight:600;color:var(--brand2)}
+.ctl{display:flex;gap:8px;align-items:stretch}
+.micb{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-size:17px;font-weight:700;cursor:pointer;min-height:50px}
+.micb.on{background:var(--mic);animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(198,40,40,.45)}70%{box-shadow:0 0 0 10px rgba(198,40,40,0)}100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}}
+.ctl .btn{min-height:50px}
+.totl{display:flex;justify-content:space-between;align-items:center;margin-top:7px;gap:8px}
+.totl .tv{font-size:20px;font-weight:800}
+.totl small{display:block;color:var(--muted);font-size:11.5px}
+.totl em{display:block;font-style:normal;font-size:11.5px;color:var(--warn)}
+
+/* ---------- sheets (bottom modals) ---------- */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.ov.show{display:flex}
+#ovUnit{z-index:25}
+#ovWa,#ovRowMenu{z-index:23}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:94vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom))}
+@media (min-width:600px){ .ov{align-items:center} .sheet{border-radius:16px} }
+.sheet h3{margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.sheet h3 button{background:none;border:0;font-size:22px;cursor:pointer;color:var(--muted)}
+.sacts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.err{color:var(--bad);font-size:13.5px;min-height:18px;margin-top:6px}
+
+/* review */
+.rvh{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:14px;margin-bottom:8px}
+.rvh div span{display:block;color:var(--muted);font-size:12px}
+.rvh div b{font-size:15px}
+.cnts{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.cnts span{border-radius:14px;padding:4px 10px;font-size:13px;font-weight:600;background:#eef1f5}
+.cnts .b{background:var(--badbg);color:var(--bad)} .cnts .w{background:var(--warnbg);color:var(--warn)} .cnts .g{background:var(--okbg);color:var(--ok)}
+.sec-t{font-size:13px;font-weight:700;color:var(--muted);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+.pc{border:1px solid #e39a95;border-radius:11px;padding:9px;margin-bottom:8px;background:#fff}
+.pc.fl{border-color:#e5b567;background:var(--warnbg)}
+.pc.ok{border-color:#8fcca6;background:var(--okbg)}
+.pc .pt{display:flex;justify-content:space-between;gap:8px;font-size:15px}
+.pc .pt b{font-weight:700}
+.pc .pt span{color:var(--muted);font-size:13.5px;white-space:nowrap}
+.pc .pm{font-size:12.5px;margin-top:3px}
+.pc .pm .e{color:var(--bad)} .pc .pm .w{color:var(--warn)}
+.pc .pf{display:flex;gap:6px;align-items:center;margin-top:7px;flex-wrap:wrap}
+.pc .pf label{font-size:12.5px;color:var(--muted);min-width:34px}
+.pc .pf .inp{flex:1;min-width:90px;font-size:18px;font-weight:600;padding:8px 10px}
+.pc .pa{font-weight:700;white-space:nowrap}
+.dl{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.dl button{display:flex;justify-content:space-between;gap:8px;width:100%;border:0;border-top:1px solid #eef1f4;background:#fff;padding:9px 10px;text-align:left;cursor:pointer;font-size:14px}
+.dl button:first-child{border-top:0}
+.dl button span{color:var(--muted);font-size:13px}
+.dl button b{white-space:nowrap}
+.tt{width:100%;border-collapse:collapse;font-size:15px;margin-top:10px}
+.tt td{padding:5px 2px}
+.tt td:last-child{text-align:right;font-weight:600}
+.tt .net td{font-size:19px;font-weight:800;border-top:2px solid var(--ink)}
+.why{font-size:13px;color:var(--bad);text-align:center}
+
+/* day book / items tabs */
+.qd{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.g2 label{min-width:0}
+input[type=date].inp{min-width:0;max-width:100%;padding:9px 6px}
+html,body{overflow-x:hidden}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.tiles div{background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px;text-align:center}
+.tiles b{display:block;font-size:18px}
+.tiles span{font-size:12px;color:var(--muted)}
+.ml .m{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.ml .m:first-child{border-top:0}
+.ml .m .d{flex:1;min-width:0}
+.ml .m .d div:last-child{color:var(--muted);font-size:12.5px}
+.tb{width:100%;border-collapse:collapse;font-size:14px}
+.tb th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:4px 3px;border-bottom:1px solid var(--line)}
+.tb td{padding:7px 3px;border-bottom:1px solid #eef1f4}
+.tb .r{text-align:right;white-space:nowrap}
+details.box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+details.box summary{font-weight:700;cursor:pointer}
+.il .i{display:flex;align-items:center;gap:8px;padding:10px 2px;border-top:1px solid var(--line);cursor:pointer}
+.il .i:first-child{border-top:0}
+.il .i .d{flex:1;min-width:0}
+.il .i .d div:last-child{font-size:12.5px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:8px 11px;cursor:pointer;font-size:14px}
+.seg button.sel{background:var(--brand);color:#fff}
+ol.log{margin:6px 0 0;padding-left:20px;font-size:12.5px;max-height:50vh;overflow:auto}
+ol.log li{margin-bottom:4px}
+ol.log li span{color:var(--muted)}
+.help{font-size:14px;line-height:1.55}
+.help b{color:var(--brand2)}
+.rep{margin-top:8px;border:1px solid #9cc0e6;background:var(--cur);border-radius:10px;padding:8px 10px;font-size:13.5px}
+.rep b{font-size:14px}
+.rep .rb{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.cx{text-decoration:line-through;color:var(--muted)}
+.tag{display:inline-block;background:var(--badbg);color:var(--bad);border-radius:6px;padding:1px 6px;font-size:11.5px;font-weight:700;margin-left:4px}
+.ml .m{flex-wrap:wrap}
+.ml .m .d{flex:1 1 100%}
+.ml .acts2{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex:1 1 100%;margin-top:-4px}
+.wa{background:#1fa855!important;color:#fff!important;text-decoration:none;text-align:center;display:block;white-space:normal!important}
+.wa.dis{opacity:.45;pointer-events:none}
+.msgpv{white-space:pre-wrap;background:#f4f6f8;border-radius:9px;padding:9px;font-size:13px;max-height:34vh;overflow:auto;margin-top:8px}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 14px;border-radius:9px;font-size:14px;z-index:40;display:none;max-width:92vw;text-align:center}
+#ovBusy{align-items:center;z-index:35}
+.spin{width:38px;height:38px;border:4px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ================= v6 additions ================= */
+.toast button{background:#fff;color:#222;border:0;border-radius:6px;padding:4px 10px;margin-left:10px;font-weight:700;cursor:pointer}
+.sum .ia{display:flex;gap:4px;flex:0 0 auto}
+.sum .ia button{border:1px solid var(--line);background:#fff;border-radius:8px;width:36px;height:36px;font-size:15px;cursor:pointer;padding:0}
+.sum .ia .del{color:var(--bad)}
+.urow{display:flex;gap:4px}
+.urow .inp{flex:1}
+.urow button{flex:0 0 34px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:pointer}
+/* favourites strip */
+.favs{display:flex;gap:6px;overflow-x:auto;padding:0 0 7px;scrollbar-width:none}
+.favs::-webkit-scrollbar{display:none}
+.fchip{flex:0 0 auto;border:1px solid #c9d6e6;background:#f4f8fd;color:var(--ink);border-radius:18px;padding:7px 12px;font-size:14px;cursor:pointer;white-space:nowrap}
+.fchip.st{border-color:#e8c46a;background:#fff8e6}
+.ctl .btn.two{white-space:normal;line-height:1.15;font-size:14px;padding:6px 10px;max-width:48%}
+/* wide screens: editable table like a register */
+.itab{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.itab th{background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;padding:10px 8px;text-align:left}
+.itab th.r,.itab td.r{text-align:right}
+.itab td{padding:6px 6px;border-top:1px solid #e3e8ee;vertical-align:middle}
+.itab td.sl{width:40px;color:var(--muted);font-weight:600;text-align:center}
+.itab .ti{width:100%;padding:9px 10px;border:1px solid transparent;background:#f6f8fb;border-radius:8px;min-width:0}
+.itab .ti:focus{outline:2px solid var(--brand2);background:#fff}
+.itab .ti.r{text-align:right}
+.itab .ti.bad{border-color:var(--bad);background:var(--badbg)}
+.itab .ti.chk{border-color:var(--warn);background:#fffaf0}
+.itab td.am{text-align:right;font-weight:700;white-space:nowrap;width:120px}
+.itab td.ta{width:86px;text-align:right;white-space:nowrap}
+.itab td.ta button{border:0;border-radius:8px;width:34px;height:34px;cursor:pointer;margin-left:3px;background:#eef2f6}
+.itab td.ta .del{background:var(--badbg);color:var(--bad)}
+.itab tr.flag td{background:#fffaf0}
+.itab tr.rerr td.sl{color:var(--bad)}
+.itab tr.cur td{background:var(--cur)}
+.itab tr.tiss td{border-top:0;padding:0 8px 8px}
+.itab tr.tiss .iss{padding:0}
+.itab col.cq{width:90px} .itab col.cu{width:110px} .itab col.cr{width:110px}
+/* rate screen */
+.rsheet{max-width:520px;text-align:center}
+.rtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px}
+.rtop b{font-size:16px}
+.rtop button{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13.5px}
+.pbar{height:6px;background:#e6eaf0;border-radius:4px;margin:10px 0 14px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--ok);width:0;transition:width .25s}
+.rname{font-size:24px;font-weight:800;line-height:1.2;word-break:break-word}
+.rqty{font-size:18px;color:var(--muted);margin-top:4px}
+.rin{display:flex;align-items:center;gap:8px;justify-content:center;margin:16px auto 4px;max-width:320px}
+.rin span{font-size:30px;font-weight:700}
+.rin input{flex:1;font-size:34px;font-weight:800;text-align:center;padding:10px;border:2px solid var(--brand2);border-radius:12px;min-width:0;width:100%}
+.ramt{font-size:16px;min-height:22px;color:var(--ok);font-weight:700}
+.rlast{margin-top:8px;min-height:40px}
+.rlast .chip{font-size:16px;padding:8px 16px}
+.rheard{font-size:14px;color:var(--muted);min-height:20px;margin-top:6px;word-break:break-word}
+.rheard b{color:var(--brand2)}
+.rnav{display:grid;grid-template-columns:1fr 1fr 1.6fr;gap:8px;margin-top:14px}
+.rnav button{min-height:54px;font-size:16px;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:#fff;font-weight:600}
+.rnav .btn.pri{border:0;font-size:19px}
+.rmic{margin-top:10px;background:none;border:0;color:var(--brand2);font-weight:600;cursor:pointer;font-size:14px;padding:6px}
+.rmic.on{color:var(--mic)}
+.star{background:none;border:0;font-size:20px;cursor:pointer;padding:4px 6px;color:#c9a227}
+.star.off{color:#c7ced6}
+@media (min-width:700px){
+  .hd,.tabs,main,#dock .in{max-width:1100px}
+  .itab{table-layout:fixed}
+  .itab col.csl{width:48px} .itab col.cq{width:90px} .itab col.cu{width:120px} .itab col.cr{width:110px} .itab col.ca{width:130px} .itab col.cx{width:92px}
+}
+/* ================= v7: compact dock, customer line, edit mode, discount ================= */
+#dock{padding:6px 10px calc(6px + env(safe-area-inset-bottom))}
+.favs{padding:0 0 6px}
+.fchip{padding:6px 11px;font-size:13.5px}
+.live{padding:4px 8px;margin-bottom:6px;min-height:0;border-radius:8px}
+.live .h1{font-size:15px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.live .h1 .ph{font-size:13px}
+.live .h2{font-size:12.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live .h2:empty{display:none}
+.live .lg{font-size:11.5px;padding:1px 0 0 6px}
+.ctl{display:grid;grid-template-columns:1.25fr 0.9fr 1.15fr;gap:6px}
+.micb{min-height:48px;font-size:15.5px;gap:6px;border-radius:11px;padding:0 6px}
+.ctl .btn{min-height:48px;padding:4px 6px;border-radius:11px;white-space:normal;line-height:1.15;font-size:13.5px}
+.ctl .btn.two{max-width:none}
+.revb{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.revb .tv{font-size:16.5px;font-weight:800;white-space:nowrap}
+.revb small{font-size:11.5px;font-weight:600;opacity:.95}
+.revb em{font-style:normal;font-size:10.5px;font-weight:600;color:#ffe3a3}
+/* customer card collapses to one line once items exist */
+.cmini{display:none;align-items:center;gap:8px;cursor:pointer;font-size:15px}
+.cmini .cm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmini .cm span{color:var(--muted);font-size:13.5px}
+.cmini .ce{color:var(--brand2);font-weight:700;font-size:14px}
+#custCard.mini{padding:8px 10px}
+#custCard.mini .cmini{display:flex}
+#custCard.mini .cfull{display:none}
+/* edit mode */
+.editbar{display:flex;align-items:center;gap:8px;background:#fff4d6;border:1px solid #e8c46a;border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:14px}
+.editbar b{white-space:nowrap}
+.editbar span{flex:1;min-width:0}
+.editbar button{border:1px solid #d9b45a;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13.5px;white-space:nowrap}
+/* discount in review */
+.lessrow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.lessrow label{font-size:14px;font-weight:600;white-space:nowrap}
+.lessrow .inp{max-width:140px;font-size:16px;font-weight:600}
+.lessrow .note{margin:0}
+.lr{font-size:11.5px;color:var(--ok);font-weight:600}
+.zoomb{background:none;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:7px;font-weight:800;font-size:13px;padding:4px 7px;cursor:pointer}
+.pre{font-size:16px;line-height:1.45}
+.pre b{color:var(--brand2)}
+/* v7: one-line header, short dock labels */
+.hd{padding:6px 10px 4px;gap:6px}
+.hd h1{font-size:15px}
+.hd small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd .no{font-size:11px;white-space:nowrap}
+.hd .no .nl{display:none}
+.tabs button{padding:6px 4px 7px;font-size:13.5px}
+.ctl .btn,.micb{white-space:nowrap}
+.ctl .btn b{display:block;font-size:15px}
+.ctl .btn small,.revb small{display:block;font-size:11px;font-weight:600;opacity:.92}
+.revb .tv{font-size:16px}
+.revb.warn small{color:#ffe3a3}
+@media (min-width:420px){ .hd .no .nl{display:inline} }
+.live .h1{-webkit-line-clamp:1}
+.ctl .btn.two{white-space:nowrap}
+.editbar{flex-wrap:wrap;row-gap:4px}
+.editbar b{flex:1 1 auto}
+.editbar button{margin-left:auto}
+.editbar span{flex:1 1 100%;order:3;font-size:12.5px;color:#6b5210}
+/* ================= v8: offline / uploads ================= */
+.npill{display:inline-block;margin-top:2px;background:rgba(255,255,255,.14);border:0;color:#d7f5df;border-radius:9px;padding:1px 7px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.npill.off{color:#ffd2cc;background:rgba(255,120,100,.2)}
+.npill.wait{color:#ffe7a3;background:rgba(255,200,80,.2)}
+.npill.err{color:#fff;background:#c62828}
+.micb.offl{background:#6b7785}
+.qitem{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.qitem.err{border-color:#e39a95;background:var(--badbg)}
+.qitem .qt{display:flex;justify-content:space-between;gap:8px;font-size:14.5px}
+.qitem .qs{font-size:12.5px;color:var(--muted);margin-top:2px}
+.qitem.err .qs{color:var(--bad)}
+.qitem .qa{display:flex;gap:6px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+.tag.q{background:#fff4d6;color:#8a5a00}
+.offnote{background:#fff4d6;border:1px solid #e8c46a;border-radius:10px;padding:8px 10px;font-size:13.5px;margin-bottom:10px}
+
+/* ================= v9 additions ================= */
+.pct{flex:0 0 auto;min-width:44px;height:40px;border:1px solid var(--brand2);background:#eef4fb;color:var(--brand2);border-radius:9px;font-size:18px;font-weight:800;cursor:pointer;padding:0 8px}
+.pct.sm{min-width:30px;height:34px;font-size:14px;padding:0 4px}
+.lessrow{flex-wrap:wrap}
+.lessrow .inp{max-width:120px}
+.pc .edt{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--brand2)}
+.pc .pl{font-size:14.5px;margin-top:4px;line-height:1.35}
+.pc .pl .amt{float:right;color:var(--ink);font-size:15.5px}
+.pc .pl .miss{color:var(--bad);font-weight:600}
+.dsc{color:var(--warn);font-size:12.5px;font-weight:600;white-space:nowrap}
+.ed .drow{margin-top:6px}
+.ed .drow label{display:block;font-size:12.5px;color:var(--muted)}
+.ed .drow .urow{max-width:220px}
+.itab col.cd{width:96px}
+.itab td .urow{display:flex;gap:3px}
+.itab td .urow .ti{min-width:0}
+.rpdone{margin:10px auto 0;max-width:420px;border:1px solid #8fcca6;background:var(--okbg);border-radius:12px;padding:9px 12px;font-size:15px;text-align:left}
+.rpdone .rdl{line-height:1.4}
+.rpdone .rds{font-size:13.5px;color:var(--muted);margin-top:3px}
+.rpdone button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 8px;font-size:13px;cursor:pointer;margin-left:4px;color:var(--brand2)}
+#ovRate.took .rin input{border-color:var(--ok);background:var(--okbg)}
+#ovRate.took .ramt{font-size:20px}
+.verwarn{background:#fff3cd;border:1px solid #e5b567;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13.5px;line-height:1.45}
+@media (min-width:700px){ .itab col.cd{width:100px} }
+#rvConfirmAll,#rvConfirmTop{white-space:normal;line-height:1.25}
+
+/* ================= v10 additions ================= */
+#ovKey{z-index:30}
+.ksheet{max-width:420px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
+.ktitle{font-size:15px;font-weight:700;color:var(--muted);text-align:center}
+.kval{font-size:34px;font-weight:800;text-align:center;margin:6px 0 2px;min-height:44px;border:2px solid var(--brand2);border-radius:12px;padding:4px 10px;background:#fff}
+.kval small{font-size:22px;color:var(--muted);font-weight:700}
+.knote{font-size:14px;text-align:center;min-height:20px;color:var(--ok);font-weight:600;margin-bottom:8px}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kgrid button{min-height:54px;font-size:22px;font-weight:700;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;color:var(--ink);touch-action:manipulation}
+.kgrid button:active{background:#e8eef6}
+.kgrid .kf{font-size:17px;background:#f3f5f8}
+.kgrid .km{background:#eef4fb;color:var(--brand2);border-color:#b9cde6}
+.kgrid .km.on{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+.kgrid .kok{background:var(--ok);color:#fff;border:0;font-size:18px}
+.dbsync{font-size:13px;color:var(--brand2);background:#eef4fb;border-radius:8px;padding:6px 10px;margin:0 0 8px}
+.dbsync.off{color:#8a5a00;background:#fff3cd}
+input[readonly][inputmode=none]{cursor:pointer}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" onerror="loadAlt(this,'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js')"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" onerror="loadAlt(this,'https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js')"></script>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>function loadAlt(el, src) { var s = document.createElement('script'); s.src = src; s.async = false; document.head.appendChild(s); }</script>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div class="t"><h1 id="shopName">MITTAL TRADERS</h1><small><span id="shopPlace">Moubhandar</span> · Cash Memo</small></div>
+    <div class="no"><span class="nl">Memo No.<br></span><b id="nextNo">—</b><br><button class="npill" id="netPill">● online</button></div>
+    <button class="zoomb" id="btnZoom" title="Bigger text">A+</button>
+    <button class="icon" id="btnSettings" title="Settings">⚙</button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="Bill" class="sel">🧾 Bill</button>
+    <button data-tab="Book">📒 Day Book</button>
+    <button data-tab="Items">📦 Items</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================================================ BILL -->
+<section id="tabBill">
+  <div class="verwarn" id="verWarn" hidden></div>
+  <div class="editbar" id="editBar" hidden></div>
+  <div class="card" id="custCard">
+   <div class="cmini" id="custMini"><span>👤</span><div class="cm" id="cmText"></div><span class="ce">✎ Edit</span></div>
+   <div class="cfull">
+    <label class="lb" for="party">Customer Name</label>
+    <div class="row">
+      <div class="acw"><input class="inp" type="text" id="party" name="mt-party-name" placeholder="Cash" autocomplete="off"><div class="sug" hidden></div></div>
+      <button class="smic" id="micParty" title="Speak customer name (and mobile)">🎤</button>
+    </div>
+    <label class="lb" for="mobile" style="margin-top:8px">Mobile (optional – for WhatsApp)</label>
+    <div class="row">
+      <input class="inp" type="tel" id="mobile" name="mt-cust-mob" placeholder="10-digit mobile" inputmode="tel" autocomplete="off" readonly data-lpignore="true">
+      <button class="smic" id="micMobile" title="Speak mobile number">🎤</button>
+    </div>
+    <div class="note" id="cHeard"></div>
+    <div class="rep" id="repBox" hidden></div>
+   </div>
+  </div>
+
+  <div class="lh">
+    <h2>Items (<span id="cnt">0</span>)</h2>
+    <div>
+      <button class="lnk" id="btnAdd">+ Add Item</button>
+      <button class="lnk" id="btnMore">⋯ More</button>
+    </div>
+  </div>
+  <div id="list"></div>
+  <datalist id="unitList"></datalist>
+</section>
+
+<!-- ================================================ DAY BOOK -->
+<section id="tabBook" hidden>
+  <div class="card">
+    <div class="qd">
+      <button class="chip" data-q="today">Today</button>
+      <button class="chip" data-q="yday">Yesterday</button>
+      <button class="chip" data-q="week">Last 7 days</button>
+      <button class="chip" data-q="month">This month</button>
+    </div>
+    <div class="g2">
+      <label class="lb">From<input class="inp" type="date" id="dbFrom"></label>
+      <label class="lb">To<input class="inp" type="date" id="dbTo"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <div class="acw"><input class="inp" type="text" id="dbParty" placeholder="Customer (optional)" autocomplete="off"><div class="sug" hidden></div></div>
+      <button class="btn blue" id="dbGo">Show</button>
+    </div>
+  </div>
+  <div class="dbsync" id="dbSync" hidden></div>
+  <div id="dbOut"><div class="empty">Choose a date and tap <b>Show</b>.</div></div>
+</section>
+
+<!-- ================================================ ITEMS -->
+<section id="tabItems" hidden>
+  <div class="card">
+    <div class="row">
+      <input class="inp" type="text" id="itSearch" placeholder="Search saved items" autocomplete="off">
+      <button class="btn blue" id="itNew">+ New</button>
+    </div>
+    <div class="note" id="itInfo"></div>
+  </div>
+  <div class="card il" id="itList"></div>
+</section>
+</main>
+
+<!-- ================================================ DOCK -->
+<div id="dock"><div class="in">
+  <div class="favs" id="favs"></div>
+  <div class="live" id="live">
+    <button class="lg" id="btnLog">log</button><button class="lg" id="btnHelp">help ·</button>
+    <div class="h1" id="heard1"></div>
+    <div class="h2" id="heard2"></div>
+  </div>
+  <div class="ctl">
+    <button class="micb" id="btnMic">🎤 <span>Speak</span></button>
+    <button class="btn blue two" id="btnRates"><b>Rates ▶</b><small>items done</small></button>
+    <button class="btn pri revb" id="btnReview"><span class="tv" id="total">₹0.00</span><small id="totWarn">Review &amp; Save ▶</small></button>
+  </div>
+</div></div>
+
+<!-- ================================================ RATE SCREEN -->
+<div class="ov" id="ovRate"><div class="sheet rsheet">
+  <div class="rtop"><b>Enter Rates</b><span id="rpStep"></span><button id="rClose">Finish later ✕</button></div>
+  <div class="pbar"><i id="rpBar"></i></div>
+  <div class="rname" id="rpName"></div>
+  <div class="rqty" id="rpQty"></div>
+  <div class="rin"><span>₹</span><input id="rateIn" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="Rate"></div>
+  <div class="note" id="rpBasis" style="text-align:center;margin:0"></div>
+  <div class="ramt" id="rpAmt"></div>
+  <div class="rpdone" id="rpDone" hidden></div>
+  <div class="rlast"><button class="chip g" id="rateSame" hidden></button></div>
+  <div class="rheard" id="rpHeard"></div>
+  <div class="rnav">
+    <button id="rPrev">◀ Back</button>
+    <button id="rSkip">Skip</button>
+    <button class="btn pri" id="rateOk">Next ▶</button>
+  </div>
+  <button class="rmic" id="rMic"></button>
+</div></div>
+
+<!-- ================================================ SHEETS -->
+<div class="ov" id="ovReview"><div class="sheet">
+  <h3><span id="rvTitle">Review &amp; Save</span> <button data-close="ovReview">✕</button></h3>
+  <div class="rvh" id="rvHead"></div>
+  <div class="cnts" id="rvCnts"></div>
+  <div id="rvPend"></div>
+  <div id="rvDoneWrap"><div class="sec-t">Complete</div><div id="rvDone"></div></div>
+  <div class="lessrow"><label for="lessIn">Bill discount</label><input class="inp" id="lessIn" inputmode="decimal" placeholder="0" autocomplete="off"><button type="button" class="pct" id="lessMode" title="Switch between ₹ and %">₹</button><span class="note" id="lessNote"></span></div>
+  <table class="tt" id="rvTot"></table>
+  <div class="sacts">
+    <button class="btn sec" id="rvConfirmAll" hidden></button>
+    <button class="btn pri" id="rvGen" style="padding:14px;font-size:17px">✓ Confirm &amp; Save Memo</button>
+    <div class="why" id="rvWhy"></div>
+    <button class="btn sec" data-close="ovReview">Back to bill</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ovPre"><div class="sheet">
+  <h3>Enter Rates <button data-close="ovPre">✕</button></h3>
+  <div class="pre" id="preText"></div>
+  <div class="sacts"><button class="btn pri" id="preUse" style="font-size:16px;padding:14px"></button><button class="btn sec" id="preAll"></button></div>
+</div></div>
+
+<div class="ov" id="ovUnit"><div class="sheet">
+  <h3><span id="unTitle">Select unit</span> <button data-close="ovUnit">✕</button></h3>
+  <div id="unChips"></div>
+  <div class="row" style="margin-top:12px">
+    <input class="inp" type="text" id="unOther" placeholder="Type any unit, e.g. Carton" autocomplete="off">
+    <button class="smic" id="unMic" title="Speak unit">🎤</button>
+    <button class="btn blue sm" id="unOk">Set</button>
+  </div>
+  <div class="note" id="unNote">New units are remembered for next time.</div>
+</div></div>
+
+<div class="ov" id="ovRowMenu"><div class="sheet">
+  <h3><span id="rmTitle">Item</span> <button data-close="ovRowMenu">✕</button></h3>
+  <div class="sacts">
+    <button class="btn sec" data-rm="up">↑ Move up</button>
+    <button class="btn sec" data-rm="down">↓ Move down</button>
+    <button class="btn sec" data-rm="dup">⧉ Duplicate</button>
+    <button class="btn sec" data-rm="ok" id="rmOk">✓ Confirm (clear ⚠)</button>
+    <button class="btn red" data-rm="del">✕ Delete</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ovItem"><div class="sheet">
+  <h3><span id="ieTitle">Item</span> <button data-close="ovItem">✕</button></h3>
+  <label class="lb">Item name (as printed on memo)<input class="inp" type="text" id="ieName" autocomplete="off"></label>
+  <div class="g2" style="margin-top:8px">
+    <label class="lb">Unit<span class="urow"><input class="inp" type="text" id="ieUnit" list="unitList" autocomplete="off" placeholder="e.g. Kg"><button type="button" id="ieUnitPick">▾</button></span></label>
+    <label class="lb">Last rate (₹)<input class="inp" id="ieRate" inputmode="decimal"></label>
+  </div>
+  <label style="display:flex;gap:8px;align-items:center;margin-top:10px;font-size:15px"><input type="checkbox" id="ieFav" style="width:20px;height:20px"> ⭐ Favourite (show as a quick button on the bill screen)</label>
+  <div class="note" id="ieInfo"></div>
+  <div class="err" id="ieErr"></div>
+  <div class="sacts">
+    <button class="btn pri" id="ieSave">Save item</button>
+    <button class="btn red" id="ieDel">Delete item</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ovMore"><div class="sheet">
+  <h3>Bill options <button data-close="ovMore">✕</button></h3>
+  <div class="sacts">
+    <button class="btn sec" id="mClearInc">Clear incomplete rows (no item or qty)</button>
+    <button class="btn red" id="mClear">Clear whole bill</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ovSetup"><div class="sheet">
+  <h3>Settings <button data-close="ovSetup">✕</button></h3>
+  <label class="lb">Voice entry style</label>
+  <span class="seg" id="modeSeg"><button data-m="batch">Items first, rates later</button><button data-m="line">Quick Line Mode (Advanced)</button></span>
+  <div class="note">Quick Line Mode: item + rate + qty in one sentence. The app always starts in “Items first, rates later”.</div>
+  <label class="lb" style="margin-top:10px">Voice language</label>
+  <span class="seg" id="langSeg"><button data-l="en-IN">English</button><button data-l="hi-IN">हिंदी</button></span>
+  <div class="note">Use English: item names are then in English letters, which the PDF can print.</div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  <label class="lb" for="cfgUrl">Web App URL (Apps Script → Deploy)</label>
+  <input class="inp" type="url" id="cfgUrl" name="mt-cfg-url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+  <label class="lb" for="cfgPin" style="margin-top:8px">PIN (Settings sheet)</label>
+  <input class="inp" type="password" id="cfgPin" name="mt-cfg-pin" inputmode="numeric" autocomplete="new-password">
+  <div class="err" id="cfgErr"></div>
+  <div class="sacts"><button class="btn pri" id="cfgSave">Save &amp; Connect</button></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+  <label class="lb" for="phoneName">This phone's name (shown in the Number Blocks sheet)</label>
+  <input class="inp" type="text" id="phoneName" placeholder="e.g. Counter phone" autocomplete="off">
+  <div class="note" id="numInfo"></div>
+  <div class="sacts"><button class="btn sec" id="btnUploads">☁ Uploads &amp; reserved numbers</button>
+  <button class="btn red" id="btnRelease">Release this phone's unused numbers</button></div>
+  <div class="note">Use “Release” only before resetting, changing or retiring this phone. The unused numbers are then written in the Number Blocks sheet, so the gap is explained.</div>
+</div></div>
+
+<div class="ov" id="ovLog"><div class="sheet">
+  <h3>Voice log <button data-close="ovLog">✕</button></h3>
+  <div class="note">Every sentence heard, newest first, and what the app did with it.</div>
+  <ol class="log" id="logList" reversed></ol>
+</div></div>
+
+<div class="ov" id="ovHelp"><div class="sheet help">
+  <h3>How to bill <button data-close="ovHelp">✕</button></h3>
+  <p><b>1. Customer</b> – type or 🎤 the name; the mobile fills itself for known customers, or say it: “Ramesh Kumar 98765 43210”.</p>
+  <p><b>2. Items</b> – tap a quick item button, or 🎤 one item per sentence: “Haldi 100 gram 5 kg”. After tapping a button, just say the quantity: “5 kg”. The last number is the quantity; an earlier number with a unit is the pack size. “hatao” deletes the last item.</p>
+  <p><b>3. Items Complete – Enter Rates</b> – the app shows one item at a time. Say or type the rate, e.g. “200”, then Next. “same” = last rate, “skip”, “back”.</p>
+  <p><b>4. Review &amp; Save</b> – fix anything marked red/⚠ right there, check the total, then <b>Confirm &amp; Save Memo</b>.</p>
+  <p><b>5. PDF</b> – share it on WhatsApp, download or print. Reprint any time from the Day Book.</p>
+  <p><b>Corrections by voice</b> – “change quantity to 5”, “change unit to carton”, “change rate to 200”, “repeat last bill”.</p>
+</div></div>
+
+<div class="ov" id="ovWa"><div class="sheet">
+  <h3>Send on WhatsApp <button data-close="ovWa">✕</button></h3>
+  <div class="sacts" style="margin-top:0">
+    <button class="btn pri" id="waFile">📄 Send PDF file (choose WhatsApp → contact)</button>
+  </div>
+  <div class="sec-t">or send the bill as a text message</div>
+  <label class="lb">Customer mobile<input class="inp" type="tel" id="waNum" inputmode="tel" placeholder="10-digit mobile (blank = choose in WhatsApp)" autocomplete="off"></label>
+  <div class="note" id="waNote"></div>
+  <div class="msgpv" id="waMsg"></div>
+  <div class="sacts"><a class="btn wa" id="waGo" target="_blank" rel="noopener">💬 Open WhatsApp chat with text</a></div>
+</div></div>
+
+<div class="ov" id="ovCancel"><div class="sheet">
+  <h3>Cancel memo <button data-close="ovCancel">✕</button></h3>
+  <div id="cxInfo" style="font-size:15px"></div>
+  <label class="lb" style="margin-top:10px">Reason (optional)<input class="inp" type="text" id="cxReason" placeholder="e.g. Customer returned goods" autocomplete="off"></label>
+  <div class="note">The memo number stays in the register. Its PDF will show a CANCELLED stamp and the amount is removed from Day Book totals. This cannot be undone.</div>
+  <div class="err" id="cxErr"></div>
+  <div class="sacts"><button class="btn red" id="cxGo">Cancel this memo</button><button class="btn sec" data-close="ovCancel">Keep memo</button></div>
+</div></div>
+
+<div class="ov" id="ovDone"><div class="sheet">
+  <h3><span id="doneTitle">✓ Memo saved</span> <button data-close="ovDone">✕</button></h3>
+  <div id="doneInfo"></div>
+  <p class="note" id="doneSync" style="font-size:13.5px"></p>
+  <div class="sacts">
+    <button class="btn pri" id="dShare">📄 Share PDF (WhatsApp etc.)</button>
+    <button class="btn wa" id="dWa">💬 WhatsApp message</button>
+    <button class="btn sec" id="dDown">⬇ Download PDF</button>
+    <button class="btn sec" id="dOpen">🖨 Open / Print PDF</button>
+    <button class="btn sec" id="dEdit">✎ Edit this memo</button>
+    <button class="btn blue" id="dNew">+ New Memo</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ovQueue"><div class="sheet">
+  <h3>Uploads to Google Sheet <button data-close="ovQueue">✕</button></h3>
+  <div class="note" id="qInfo" style="font-size:13.5px"></div>
+  <div id="qList" style="margin-top:8px"></div>
+  <div class="sacts"><button class="btn pri" id="qRetry">☁ Upload now</button></div>
+  <div class="note" id="qNums" style="margin-top:10px"></div>
+</div></div>
+
+<div class="ov" id="ovBusy"><div class="spin"></div></div>
+<div class="ov" id="ovKey"><div class="sheet ksheet">
+  <div class="ktitle" id="kpTitle"></div>
+  <div class="kval" id="kpVal"></div>
+  <div class="knote" id="kpNote"></div>
+  <div class="kgrid" id="kpGrid">
+    <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="bs" class="kf">⌫</button>
+    <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="%" class="km" id="kpPct">%</button>
+    <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="rs" class="km" id="kpRs">₹</button>
+    <button data-k=".">.</button><button data-k="0">0</button><button data-k="c" class="kf">Clear</button><button data-k="ok" class="kok">Done</button>
+  </div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* PARSER-START */
+/* ---------- vocabulary ---------- */
+var UNIT_DEF = [
+  // [canonical unit, short form inside item name, match key, spoken variants]
+  ['Kg', 'Kg', 'kg', 'kg kgs kilo kilos kilogram kilograms kilogramme kgm kila किलो किलोग्राम केजी'],
+  ['Gram', 'G', 'g', 'g gm gms gram grams gramme grammes grm gr ग्राम'],
+  ['Litre', 'Ltr', 'l', 'l lt ltr ltrs litre liter litres liters lit लीटर लिटर'],
+  ['Ml', 'Ml', 'ml', 'ml mls millilitre milliliter millilitres milliliters एमएल मिलीलीटर'],
+  ['Piece', 'Pc', 'pc', 'piece pieces pc pcs peace pis पीस'],
+  ['Packet', 'Packet', 'packet', 'packet packets pkt pkts pack packs packit पैकेट पैक'],
+  ['Sachet', 'Sachet', 'sachet', 'sachet sachets shashe साशे'],
+  ['Box', 'Box', 'box', 'box boxes dibba dabba डिब्बा बॉक्स'],
+  ['Bag', 'Bag', 'bag', 'bag bags bora bori बोरा बोरी बैग'],
+  ['Bottle', 'Bottle', 'bottle', 'bottle bottles botal बोतल'],
+  ['Dozen', 'Dozen', 'dozen', 'dozen dozens darjan दर्जन'],
+  ['Metre', 'Mtr', 'm', 'metre meter metres meters mtr mtrs m मीटर'],
+  ['Nag', 'Nag', 'nag', 'nag nug nos unit units नग'],
+  ['Carton', 'Carton', 'carton', 'carton cartons cartoon peti पेटी कार्टन'],
+  ['Pouch', 'Pouch', 'pouch', 'pouch pouches पाउच'],
+  ['Jar', 'Jar', 'jar', 'jar jars जार'],
+  ['Tin', 'Tin', 'tin', 'tin tins टिन'],
+  ['Roll', 'Roll', 'roll', 'roll rolls रोल'],
+  ['Pair', 'Pair', 'pair', 'pair pairs jodi joda जोड़ी जोड़ा'],
+  ['Set', 'Set', 'set', 'set sets सेट'],
+  ['Bundle', 'Bundle', 'bundle', 'bundle bundles bandal gaddi गड्डी बंडल'],
+  ['Quintal', 'Quintal', 'qtl', 'quintal quintals kuntal kwintal qtl क्विंटल'],
+  ['Strip', 'Strip', 'strip', 'strip strips patta पत्ता'],
+  ['Tray', 'Tray', 'tray', 'tray trays ट्रे'],
+  ['Feet', 'Ft', 'ft', 'feet foot ft फीट'],
+  ['Tube', 'Tube', 'tube', 'tube tubes ट्यूब']
+];
+var UNITS = UNIT_DEF.map(function (u) { return u[0]; });
+var UNIT_OF = {}, UNIT_SHORT = {}, UNIT_KEY = {};
+UNIT_DEF.forEach(function (u) {
+  UNIT_SHORT[u[0]] = u[1]; UNIT_KEY[u[0]] = u[2];
+  u[3].split(' ').forEach(function (w) { UNIT_OF[w] = u[0]; });
+  UNIT_OF[u[0].toLowerCase()] = u[0];
+});
+
+var W = {
+  zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+  eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19,
+  twenty: 20, thirty: 30, forty: 40, fourty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90,
+  half: 0.5, quarter: 0.25,
+  ek: 1, do: 2, teen: 3, char: 4, chaar: 4, paanch: 5, panch: 5, chhe: 6, chhah: 6, chah: 6, saat: 7,
+  aath: 8, aat: 8, nau: 9, das: 10, gyarah: 11, gyara: 11, barah: 12, bara: 12, terah: 13, chaudah: 14, pandrah: 15, solah: 16,
+  satrah: 17, atharah: 18, unnis: 19, bees: 20, bis: 20, tees: 30, chalis: 40, chaalis: 40, pachas: 50, pachaas: 50,
+  saath: 60, sattar: 70, assi: 80, nabbe: 90,
+  aadha: 0.5, adha: 0.5, aadhi: 0.5, aadhe: 0.5, dedh: 1.5, derh: 1.5, dhai: 2.5, dhaai: 2.5, dhayi: 2.5,
+  'एक': 1, 'दो': 2, 'तीन': 3, 'चार': 4, 'पांच': 5, 'पाँच': 5, 'छह': 6, 'छः': 6, 'सात': 7, 'आठ': 8, 'नौ': 9, 'दस': 10,
+  'बीस': 20, 'तीस': 30, 'चालीस': 40, 'पचास': 50, 'साठ': 60, 'सत्तर': 70, 'अस्सी': 80, 'नब्बे': 90,
+  'आधा': 0.5, 'डेढ़': 1.5, 'डेढ': 1.5, 'ढाई': 2.5
+};
+var MULT = { hundred: 100, sau: 100, 'सौ': 100, thousand: 1000, hazar: 1000, hazaar: 1000, hajar: 1000, 'हज़ार': 1000, 'हजार': 1000 };
+var MODS = { saadhe: 0.5, sadhe: 0.5, saade: 0.5, sade: 0.5, 'साढ़े': 0.5, 'साढे': 0.5, sava: 0.25, sawa: 0.25, 'सवा': 0.25, paune: -0.25, 'पौने': -0.25 };
+function set_(s) { var o = {}; s.split(' ').forEach(function (w) { if (w) o[w] = 1; }); return o; }
+var PAAV = set_('paav pav pao pau पाव');
+var HALFW = set_('half aadha adha आधा');
+var ANDW = set_('and aur और n');
+var RS = set_('rs rupee rupees rupaye rupay rupaya rupiya rupya rupe रुपये रुपए रुपया ₹');
+var WALA = set_('wala wali wale वाला वाली वाले');
+var PAISE = set_('paise paisa पैसे पैसा');
+var FILLER = set_('ka ki ke wala wali wale per rate qty quantity only bhav bhaav bhaw dam daam का की के वाला वाली वाले दर भाव दाम');
+
+/* ---------- text helpers ---------- */
+function prep(text) {
+  var s = String(text || '').toLowerCase();
+  s = s.replace(/[०-९]/g, function (d) { return String('०१२३४५६७८९'.indexOf(d)); });
+  s = s.replace(/(\d+)\s*(?:point|dashamlav|दशमलव)\s*(\d+)/g, '$1.$2');
+  s = s.replace(/(\d),(?=\d{3}\b)/g, '$1');
+  s = s.replace(/₹/g, ' ₹ ');
+  s = s.replace(/(\d)([a-zऀ-ॿ])/g, '$1 $2').replace(/([a-zऀ-ॿ])(\d)/g, '$1 $2');
+  s = s.replace(/[^a-z0-9.ऀ-ॿ₹ ]+/g, ' ');
+  return s.split(/\s+/).map(function (t) { return t.replace(/^\.+|\.+$/g, ''); }).filter(Boolean);
+}
+function isDig(t) { return /^\d+(\.\d+)?$/.test(t); }
+function fmtNum(v) { return String(Math.round(v * 1000) / 1000); }
+function r2(n) { return Math.round((Number(n) + Number.EPSILON) * 100) / 100; }
+function cap(w) { return /^[a-z]/.test(w) ? w.charAt(0).toUpperCase() + w.slice(1) : w; }
+function titleCase(s) { return String(s).split(' ').map(cap).join(' '); }
+
+/* learned / custom units (e.g. from the Items sheet) */
+function learnUnit(name) {
+  var u = String(name || '').trim();
+  if (!u || u.length > 20) return '';
+  var low = u.toLowerCase();
+  if (UNIT_OF[low]) return UNIT_OF[low];
+  u = titleCase(low);
+  if (UNITS.indexOf(u) < 0) UNITS.push(u);
+  UNIT_SHORT[u] = u; UNIT_KEY[u] = low.replace(/\s+/g, '');
+  if (!/\s/.test(low)) UNIT_OF[low] = u;
+  return u;
+}
+
+/* ---------- numbers ---------- */
+function wordSeq(tk, i) {
+  var total = 0, cur = null, last = '', j = i, any = false;
+  while (j < tk.length) {
+    var t = tk[j];
+    if (W.hasOwnProperty(t)) {
+      var v = W[t];
+      var c = (v % 1 !== 0 || v < 1) ? 'frac' : v < 10 ? 'ones' : v < 20 ? 'teens' : 'tens';
+      if (!any) { cur = v; last = c; any = true; j++; continue; }
+      if (last === 'frac' || c === 'frac') break;
+      if (cur === null) { cur = v; last = c; j++; continue; }
+      if (c === 'ones' && (last === 'tens' || last === 'hund')) { cur += v; last = 'ones'; j++; continue; }
+      if ((c === 'teens' || c === 'tens') && last === 'hund') { cur += v; last = c; j++; continue; }
+      break;
+    } else if (MULT.hasOwnProperty(t)) {
+      var m = MULT[t];
+      if (last === 'hund' && m === 100) break;
+      if (last === 'thou' && cur === null) break;
+      if (!any) { any = true; cur = 1; }
+      if (m === 100) { cur = (cur === null ? 1 : cur) * 100; last = 'hund'; }
+      else { total += (cur === null ? 1 : cur) * m; cur = null; last = 'thou'; }
+      j++;
+    } else break;
+  }
+  return any ? { v: total + (cur || 0), next: j } : null;
+}
+
+function readNum(tk, i, words) {
+  var t = tk[i], v = null, j = i, unit = '';
+  if (isDig(t)) {
+    v = parseFloat(t); j = i + 1;
+    if (j < tk.length && MULT.hasOwnProperty(tk[j])) { v *= MULT[tk[j]]; j++; }
+  } else if (!words) {
+    return null;
+  } else if (MODS.hasOwnProperty(t) && i + 1 < tk.length &&
+    (isDig(tk[i + 1]) || (W.hasOwnProperty(tk[i + 1]) && W[tk[i + 1]] >= 1 && W[tk[i + 1]] % 1 === 0))) {
+    v = (isDig(tk[i + 1]) ? parseFloat(tk[i + 1]) : W[tk[i + 1]]) + MODS[t]; j = i + 2;
+    if (j < tk.length && MULT.hasOwnProperty(tk[j])) { v *= MULT[tk[j]]; j++; }
+  } else if (PAAV[t]) {
+    return { v: 0.25, unit: 'Kg', next: (i + 1 < tk.length && UNIT_OF[tk[i + 1]] === 'Kg') ? i + 2 : i + 1 };
+  } else if (W.hasOwnProperty(t) || MULT.hasOwnProperty(t)) {
+    var r = wordSeq(tk, i); if (!r) return null; v = r.v; j = r.next;
+  } else return null;
+  // "5 and half", "do aur aadha"
+  if (j + 1 < tk.length && ANDW[tk[j]] && HALFW[tk[j + 1]] && v % 1 === 0) { v += 0.5; j += 2; }
+  // "do paav" = 0.5 kg
+  if (j < tk.length && PAAV[tk[j]] && v % 1 === 0) {
+    v = v * 0.25; unit = 'Kg'; j++;
+    if (j < tk.length && UNIT_OF[tk[j]] === 'Kg') j++;
+  }
+  return { v: v, unit: unit, next: j };
+}
+
+/* Converts tokens into a sequence of {w:word} and {num:true,v,unit,rs} groups */
+function leadNum(tk, i) {
+  // "do kilo chini", "ek packet maggi", "dedh kilo", "do sau gram": a number word at the start counts only
+  // when a unit / multiplier / paav follows it, so item names like "Do Bhai" are not broken
+  var t = tk[i], nx = tk[i + 1];
+  if (!(W.hasOwnProperty(t) || MODS.hasOwnProperty(t)) || nx === undefined) return false;
+  if (MODS.hasOwnProperty(t)) nx = tk[i + 2];
+  return !!(nx !== undefined && (UNIT_OF[nx] || MULT.hasOwnProperty(nx) || PAAV[nx]));
+}
+function scan(tk, words, lead) {
+  var seq = [], i = 0, rsNext = false, started = !!words;
+  while (i < tk.length) {
+    var t = tk[i];
+    if (t === '₹' || (RS[t] && i + 1 < tk.length && (isDig(tk[i + 1]) || (started && W.hasOwnProperty(tk[i + 1]))))) { rsNext = true; i++; continue; }
+    var n = readNum(tk, i, started || (lead && leadNum(tk, i)));
+    if (n) {
+      i = n.next;
+      var g = { num: true, v: n.v, unit: n.unit || '', rs: rsNext };
+      rsNext = false;
+      if (!g.unit && i < tk.length && UNIT_OF[tk[i]]) { g.unit = UNIT_OF[tk[i]]; i++; }
+      if (!g.unit && i < tk.length && RS[tk[i]]) { g.rs = true; i++; }
+      if (i < tk.length && PAISE[tk[i]]) {
+        i++;
+        var prev = null;
+        for (var k = seq.length - 1; k >= 0; k--) { if (seq[k].num) { prev = seq[k]; break; } }
+        if (prev && prev.rs && !g.rs) { prev.v = r2(prev.v + g.v / 100); continue; }
+        g.v = r2(g.v / 100); g.rs = true;
+      }
+      // "5 rupaye wala" / "Rs 5 wala" describes the pack (MRP), it is not the selling rate
+      if (g.rs && i < tk.length && WALA[tk[i]]) { g.rs = false; g.mrp = true; seq.push(g); seq.push({ w: 'wala', keep: true }); i++; started = true; continue; }
+      seq.push(g); started = true; continue;
+    }
+    seq.push({ w: t }); started = true; i++;
+  }
+  return mergeMixed(seq);
+}
+/* "2 kilo 500 gram" -> 2.5 Kg ; "1 litre 200 ml" -> 1.2 Litre (an "aur/and" between is allowed) */
+function mergeMixed(seq) {
+  var BIG = { Kg: 'Gram', Litre: 'Ml' };
+  for (var k = 0; k < seq.length; k++) {
+    var a = seq[k]; if (!a.num || !BIG[a.unit] || a.rs || a.mrp) continue;
+    var j = k + 1; if (j < seq.length && !seq[j].num && ANDW[seq[j].w]) j++;
+    var b = seq[j];
+    if (b && b.num && b.unit === BIG[a.unit] && !b.rs && !b.mrp && b.v > 0 && b.v < 1000) {
+      a.v = Math.round((a.v + b.v / 1000) * 1000) / 1000;
+      seq.splice(k + 1, j - k);
+    }
+  }
+  return seq;
+}
+
+function tokKey(e) { return e.num ? (e.mrp ? 'rs' : '') + fmtNum(e.v) + (e.unit ? UNIT_KEY[e.unit] : '') : e.w; }
+function tokDisp(e) { return e.num ? (e.mrp ? 'Rs ' : '') + fmtNum(e.v) + (e.unit ? ' ' + UNIT_SHORT[e.unit] : '') : cap(e.w); }
+function isFill(e) { return !e.num && !e.keep && (FILLER[e.w] || RS[e.w]); }
+function keyOfSeq(seq) { return seq.filter(function (e) { return !isFill(e); }).map(tokKey); }
+function nameKey(name) { return keyOfSeq(scan(prep(name), false)).join(' '); }
+
+/* ---------- item-master matching ---------- */
+function phon(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9ऀ-ॿ]/g, '')
+    .replace(/ee/g, 'i').replace(/oo/g, 'u').replace(/aa/g, 'a').replace(/ph/g, 'f').replace(/w/g, 'v').replace(/z/g, 'j')
+    .replace(/([a-z])h/g, '$1').replace(/(.)\1+/g, '$1');
+}
+function lev(a, b) {
+  var m = a.length, n = b.length, d = [], i, j;
+  if (!m) return n; if (!n) return m;
+  for (i = 0; i <= n; i++) d[i] = i;
+  for (i = 1; i <= m; i++) {
+    var prev = d[0]; d[0] = i;
+    for (j = 1; j <= n; j++) { var tmp = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = tmp; }
+  }
+  return d[n];
+}
+function sim(a, b) { var L = Math.max(a.length, b.length); return L ? 1 - lev(a, b) / L : 0; }
+function hasDig(s) { return /\d/.test(s); }
+function tokEq(a, b) {
+  if (a === b) return true;
+  if (hasDig(a) || hasDig(b) || a.length <= 2 || b.length <= 2) return false;
+  return phon(a) === phon(b) || sim(phon(a), phon(b)) >= 0.8 || sim(a, b) >= 0.8;
+}
+function itemKeys(it) {
+  if (it._n !== it.n) {
+    it._n = it.n; it._k = nameKey(it.n).split(' ').filter(Boolean);
+    it._a = (Array.isArray(it.a) ? it.a : String(it.a || '').split('|')).map(function (x) { return String(x).trim(); }).filter(Boolean);
+  }
+  return it;
+}
+/* returns {hit, sure} | {amb:[names]} | {} */
+function matchItem(S, items) {
+  if (!S.length || !items || !items.length) return {};
+  var sk = S.join(' '), cands = [], i;
+  for (i = 0; i < items.length; i++) {
+    var it = itemKeys(items[i]);
+    if (!it._k.length) continue;
+    if (it._k.join(' ') === sk || it._a.indexOf(sk) >= 0) return { hit: it, sure: true };
+  }
+  for (i = 0; i < items.length; i++) {
+    var K = items[i]._k; if (!K || !K.length) continue;
+    var ok = S.every(function (s) { return K.some(function (k) { return tokEq(s, k); }); });
+    if (!ok) continue;
+    var sure = K.filter(hasDig).every(function (k) { return S.indexOf(k) >= 0; });
+    cands.push({ it: items[i], sure: sure, extra: K.length - S.length });
+  }
+  if (!cands.length) {
+    var sj = phon(S.join('')), sd = S.join('').replace(/\D/g, '');
+    for (i = 0; i < items.length; i++) {
+      var K2 = items[i]._k; if (!K2 || !K2.length) continue;
+      if (K2.join('').replace(/\D/g, '') !== sd) continue;
+      if (sim(sj, phon(K2.join(''))) >= 0.85) cands.push({ it: items[i], sure: false, extra: 0 });
+    }
+  }
+  if (cands.length === 1) return { hit: cands[0].it, sure: cands[0].sure };
+  if (!cands.length) return {};
+  var exact = cands.filter(function (c) { return c.extra === 0 && c.sure; });
+  if (exact.length === 1) return { hit: exact[0].it, sure: true };
+  return { amb: cands.slice(0, 6).map(function (c) { return c.it.n; }) };
+}
+
+/* ---------- item sentence ---------- */
+/* mode 'batch': item + qty (+unit);  mode 'line': item + rate + qty (+unit) */
+function parseItem(text, items, mode) {
+  var tk = prep(text), seq = scan(tk, false, true);
+  var out = { p: '', q: '', u: '', r: '', f: {}, amb: null, heard: String(text || '').trim(), h: '', hit: null, disp: '' };
+  if (!seq.length) return out;
+  var flags = [];
+  var core = seq.filter(function (e) { return !isFill(e); });
+  var numsIdx = [];
+  seq.forEach(function (e, i) { if (e.num) numsIdx.push(i); });
+
+  // 1. whole sentence is a saved item (e.g. "haldi 100 gram" = "Haldi 100 G Sachet") -> name only
+  var full = null;
+  if (numsIdx.length && numsIdx.every(function (i) { return seq[i].unit && !seq[i].rs; })) {
+    var fm = matchItem(keyOfSeq(core), items);
+    if (fm.hit && fm.sure) full = fm.hit;
+  }
+
+  var rateI = -1, qtyI = -1, k;
+  if (!full) {
+    for (k = numsIdx.length - 1; k >= 0; k--) if (seq[numsIdx[k]].rs) { rateI = numsIdx[k]; break; }
+    for (k = numsIdx.length - 1; k >= 0; k--) if (numsIdx[k] !== rateI && !seq[numsIdx[k]].rs) { qtyI = numsIdx[k]; break; }
+    if (mode === 'line' && rateI < 0 && qtyI >= 0) {
+      for (k = qtyI - 1; k >= 0; k--) {
+        if (seq[k].num) { if (!seq[k].unit) rateI = k; break; }
+        if (!isFill(seq[k])) break;
+      }
+    }
+  }
+  var used = [rateI, qtyI].filter(function (x) { return x >= 0; });
+  var cut = used.length ? Math.min.apply(null, used) : seq.length;
+  var endI = used.length ? Math.max.apply(null, used) : seq.length - 1;
+  var nameSeq = seq.slice(0, cut).filter(function (e) { return !isFill(e) && !(e.num && e.rs); });
+  var tail = seq.slice(endI + 1).filter(function (e) { return !isFill(e) && !e.num; });
+  if (!nameSeq.length && tail.length) { nameSeq = tail; tail = []; }
+  else if (tail.length) { nameSeq = nameSeq.concat(tail); flags.push('Check: words heard after quantity'); }
+
+  var S = keyOfSeq(nameSeq);
+  out.h = S.join(' ');
+  out.disp = nameSeq.map(tokDisp).join(' ');
+
+  var m = full ? { hit: full, sure: true } : matchItem(S, items);
+  if (m.hit && m.sure) {
+    out.p = m.hit.n; out.hit = m.hit;
+  } else if (m.hit) {
+    // spoken words lack the saved item's pack size: keep what was heard, offer the saved item as a tap-to-use suggestion
+    out.p = out.disp; out.amb = [m.hit.n]; flags.push('Similar saved item: tap it to use, or ✓ Confirm to keep as heard');
+  } else if (m.amb) {
+    out.p = out.disp; out.amb = m.amb; flags.push('Matches ' + m.amb.length + ' saved items — tap the right one');
+  } else if (out.disp) {
+    out.p = out.disp; flags.push('New item — confirm name');
+    var loose = nameSeq.filter(function (e) { return e.num && !e.unit && !e.mrp; });
+    if (loose.length) flags.push('Number ' + fmtNum(loose[0].v) + ' kept in item name — check');
+  }
+  if (flags.length) out.f.p = flags.join(' · ');
+
+  if (qtyI >= 0) {
+    var g = seq[qtyI];
+    out.q = g.v;
+    out.u = g.unit || (out.hit && out.hit.u) || '';
+    if (!out.u) out.f.u = 'Unit not heard — select unit';
+  }
+  if (rateI >= 0) out.r = seq[rateI].v;
+  else if (mode === 'line' && out.hit && out.hit.r > 0 && qtyI >= 0) out.r = out.hit.r;
+  return out;
+}
+
+/* ---------- two items in one sentence ---------- */
+/* "chini 5 kg aur dal 2 kg" -> ["chini 5 kg", "dal 2 kg"]. Split only when every part has an item word AND a number,
+   so "Head and Shoulders 180 ml" or "2 kilo aur 500 gram" stay whole. */
+function splitItems(text) {
+  var parts = String(text || '').split(/\s*,\s*|\s+(?:and|aur|phir|or|और|फिर)\s+/i).map(function (p) { return p.trim(); }).filter(Boolean);
+  if (parts.length < 2) return [String(text || '').trim()];
+  var ok = parts.every(function (p) {
+    var sq = scan(prep(p), false, true), hasNum = false, hasWord = false;
+    sq.forEach(function (e) { if (e.num && !e.mrp) hasNum = true; else if (!e.num && !isFill(e) && !UNIT_OF[e.w] && !ANDW[e.w]) hasWord = true; });
+    return hasNum && hasWord;
+  });
+  return ok ? parts : [String(text || '').trim()];
+}
+
+/* Gram / Ml lines are priced per Kg / Litre (kirana rates are per kilo). */
+var PER_BASE = { Gram: 'Kg', Ml: 'Litre' };
+function unitFactor(u) { return PER_BASE[u] ? 0.001 : 1; }
+function lineAmount(q, u, r) { return r2(Number(q) * Number(r) * unitFactor(u)); }
+function rateBasis(u) { return PER_BASE[u] || u || ''; }
+
+/* ---------- rate sentence ---------- */
+function parseRate(text) {
+  var seq = scan(prep(text), true).filter(function (e) { return e.num; });
+  if (seq.length !== 1) return null;
+  return seq[0].v > 0 ? r2(seq[0].v) : null;
+}
+
+/* ---------- quantity phrase (for corrections) ---------- */
+function parseQty(text) {
+  var seq = scan(prep(text), true), g = null, u = '';
+  seq.forEach(function (e) { if (e.num && !g) g = e; else if (!e.num && UNIT_OF[e.w] && !u) u = UNIT_OF[e.w]; });
+  return g ? { v: g.v, u: g.unit || u } : null;
+}
+/* sentence that is only a quantity ("5", "5 kg", "dedh kilo") -> {v,u}, else null */
+function qtyOnly(text) {
+  var seq = scan(prep(text), true), g = null, u = '';
+  for (var i = 0; i < seq.length; i++) {
+    var e = seq[i];
+    if (e.num) { if (g || e.rs) return null; g = e; continue; }
+    if (UNIT_OF[e.w]) { if (!u) u = UNIT_OF[e.w]; continue; }
+    if (!isFill(e)) return null;
+  }
+  return g ? { v: g.v, u: g.unit || u } : null;
+}
+function parseUnit(text) {
+  var tk = prep(text);
+  for (var i = 0; i < tk.length; i++) if (UNIT_OF[tk[i]]) return UNIT_OF[tk[i]];
+  return '';
+}
+
+/* ---------- voice commands ---------- */
+var CMD = {
+  stopItems: 'bas|bus|stop|stop items|stop item|stop listening|items done|item done|done|khatam|khatm|ho gaya|hogaya|ho gya|bas itna|bas karo|बस|खत्म|ख़त्म|हो गया|स्टॉप|बस करो',
+  startRates: 'start rates|start rate|start the rates|start rate entry|rates|rate|rate shuru|rate start|rate chalu|रेट|रेट शुरू|स्टार्ट रेट|रेट चालू',
+  finish: 'finish bill|finish|bill finish|finish the bill|final|bill|total|bill banao|bill bana do|बिल|बिल बनाओ|फिनिश|टोटल',
+  undo: 'hatao|hata do|delete|delete last|delete last item|cancel|cancel last|remove|remove last|galat|undo|last hatao|हटाओ|हटा दो|गलत|कैंसिल|डिलीट',
+  skip: 'skip|skip rate|skip it|skip item|next|next item|aage|chhodo|chodo|अगला|आगे|छोड़ो|स्किप',
+  prev: 'previous|previous item|previous rate|back|go back|pichla|peeche|piche|पिछला|पीछे',
+  repeat: 'repeat|repeat item|repeat current item|repeat please|dobara|phir se|fir se|again|दोबारा|फिर से',
+  same: 'same|same rate|wahi|vahi|last rate|purana|purana rate|old rate|वही|पुराना',
+  correct: 'correct rate|correct last|correct last rate|galat rate',
+  repeatBill: 'repeat last bill|repeat bill|last bill|pichla bill|purana bill|same bill|same as last bill|पिछला बिल|पुराना बिल',
+  stopRates: 'bas|bus|stop|stop rates|stop rate|stop rate entry|done|khatam|ho gaya|बस|स्टॉप|खत्म'
+};
+var CMD_SET = {};
+Object.keys(CMD).forEach(function (k) { CMD_SET[k] = {}; CMD[k].split('|').forEach(function (p) { CMD_SET[k][prep(p).join(' ')] = 1; }); });
+
+var FIELD_OF = { quantity: 'q', qty: 'q', quantities: 'q', quality: 'q', matra: 'q', maatra: 'q', mathra: 'q', 'मात्रा': 'q', 'वजन': 'q',
+  rate: 'r', rates: 'r', price: 'r', bhav: 'r', daam: 'r', 'रेट': 'r', 'दाम': 'r', 'भाव': 'r', unit: 'u', units: 'u', 'यूनिट': 'u' };
+
+function command(text, stage) {
+  var t = prep(text).join(' ');
+  var keys = stage === 'rates' ? ['stopRates', 'skip', 'prev', 'repeat', 'same', 'correct', 'finish'] : ['stopItems', 'startRates', 'finish', 'undo', 'repeatBill'];
+  for (var i = 0; i < keys.length; i++) if (CMD_SET[keys[i]][t]) return { cmd: keys[i] };
+  var m = t.match(/^(?:please )?(?:change|correct|badlo|badal|badal do|set|update|make) (?:the )?(\S+) (?:to |ko |as )?(.+)$/);
+  if (m && FIELD_OF[m[1]]) return { cmd: 'change', field: FIELD_OF[m[1]], value: m[2] };
+  m = t.match(/^(\S+) (.+?) (?:karo|kar do|kardo|kar dijiye|करो|कर दो)$/);
+  if (m && FIELD_OF[m[1]]) return { cmd: 'change', field: FIELD_OF[m[1]], value: m[2] };
+  return null;
+}
+/* PARSER-END */
+
+
+/* ======================================================== APP STATE */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var ls = {
+  get: function (k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+var cfg = ls.get('mt_cfg', { url: '', pin: '' });
+var DEV = ls.get('mt_dev', '') || ('D' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase());
+ls.set('mt_dev', DEV);
+/* the upload queue must never be lost silently: strict write */
+function qGet() { return ls.get('mt_queue', []); }
+function qPut(q) { try { localStorage.setItem('mt_queue', JSON.stringify(q)); return true; } catch (e) { return false; } }
+function newTxn() { return 'T' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+var state = {
+  tab: 'Bill',
+  lang: ls.get('mt_lang', 'en-IN'),
+  mode: 'batch',                 // always start in "Items first, rates later"
+  items: ls.get('mt_items', []),
+  parties: ls.get('mt_parties', []),
+  mobiles: ls.get('mt_mobiles', {}),
+  units: ls.get('mt_units', []),
+  lastBills: {},
+  rows: [], open: -1, stage: 'items', cur: -1, lastRated: -1, touched: -1, awaitQty: -1,
+  roundOff: ls.get('mt_round', true),
+  nextNo: '', lastMemo: null, lastPdf: null, reviewed: false, log: [], lastMsg: null,
+  unitTarget: null, editItem: null, txn: newTxn(), wide: false,
+  less: '', lessPct: false, edit: null, zoom: ls.get('mt_zoom', 0)
+};
+state.units.forEach(learnUnit);
+state.items.forEach(function (it) { if (it.u) learnUnit(it.u); });
+
+function $(id) { return document.getElementById(id); }
+function inr(n) { return '₹' + Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+var APP_VER = 'v10';
+function n2(n) { return Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function toast(m, ms, action) {
+  var t = $('toast'); t.textContent = m;
+  if (action) { var b = document.createElement('button'); b.textContent = action.label; b.onclick = function () { t.style.display = 'none'; action.fn(); }; t.appendChild(b); }
+  t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(function () { t.style.display = 'none'; }, ms || 2600);
+}
+function busy(on) { $('ovBusy').classList.toggle('show', !!on); }
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function num(x) {
+  if (typeof x === 'number') return isFinite(x) ? x : NaN;
+  var s = String(x == null ? '' : x).replace(/,/g, '').trim();
+  return /^\d*\.?\d+$/.test(s) ? parseFloat(s) : NaN;
+}
+function blank(x) { return x === '' || x === null || x === undefined || String(x).trim() === ''; }
+function fmtQ(q) { var n = num(q); return isNaN(n) ? String(q) : String(Math.round(n * 1000) / 1000); }
+function ymd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function today() { return ymd(new Date()).split('-').reverse().join('-'); }
+function newRow(o) { o = o || {}; return { p: o.p || '', q: o.q === undefined ? '' : o.q, u: o.u || '', r: o.r === undefined ? '' : o.r, heard: o.heard || '', h: o.h || '', d: o.d === undefined ? '' : o.d, dp: !!o.dp, f: o.f || {}, amb: o.amb || null }; }
+function showOv(id, on) { $(id).classList.toggle('show', on !== false); }
+document.addEventListener('click', function (e) { var c = e.target.getAttribute && e.target.getAttribute('data-close'); if (c) showOv(c, false); });
+Array.prototype.forEach.call(document.querySelectorAll('.ov'), function (ov) {
+  ov.addEventListener('click', function (e) { if (e.target === ov && ['ovBusy', 'ovDone', 'ovRate'].indexOf(ov.id) < 0) showOv(ov.id, false); });
+});
+
+/* ---------- mobile number helpers (also blocks browser autofill junk) ---------- */
+function normMobile(m) {
+  var d = String(m || '').replace(/\D/g, '');
+  if (d.length === 12 && d.indexOf('91') === 0) d = d.slice(2);
+  if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+  return /^[6-9]\d{9}$/.test(d) ? d : '';
+}
+function cleanMobileBox() {
+  var el = $('mobile'), v = el.value;
+  if (/[a-z:\/]/i.test(v)) v = '';                  // a URL or text put there by autofill
+  v = v.replace(/[^\d+ ]/g, '');
+  if (v !== el.value) el.value = v;
+}
+$('mobile').addEventListener('focus', function () { this.removeAttribute('readonly'); });
+$('mobile').addEventListener('input', function () { cleanMobileBox(); saveDraft(); });
+$('mobile').addEventListener('change', cleanMobileBox);
+setTimeout(cleanMobileBox, 600); setTimeout(cleanMobileBox, 2000);
+function digitsFromSpeech(tokens) {
+  var out = '', i;
+  for (i = 0; i < tokens.length; i++) {
+    var t = tokens[i];
+    if (/^\d+$/.test(t)) out += t;
+    else if ((t === 'double' || t === 'triple') && i + 1 < tokens.length) {
+      var n = /^\d$/.test(tokens[i + 1]) ? tokens[i + 1] : (W.hasOwnProperty(tokens[i + 1]) && W[tokens[i + 1]] < 10 && W[tokens[i + 1]] % 1 === 0 ? String(W[tokens[i + 1]]) : '');
+      if (n) { out += t === 'double' ? n + n : n + n + n; i++; }
+    } else if (W.hasOwnProperty(t) && W[t] < 10 && W[t] % 1 === 0 && (out.length || /^(zero|one|two|three|four|five|six|seven|eight|nine)$/.test(t))) out += String(W[t]);
+  }
+  return out;
+}
+
+/* draft (with migration from v1-v5 rows) */
+var draft = ls.get('mt_draft', null);
+if (draft) {
+  state.rows = (draft.rows || []).map(function (r) { var n = newRow(r); if (r.flag && !r.f) n.f = { p: r.flag }; return n; });
+  $('party').value = draft.party || '';
+  $('mobile').value = /[a-z]/i.test(draft.mobile || '') ? '' : (draft.mobile || '');
+  if (draft.txn) state.txn = draft.txn;
+  state.less = draft.less || ''; state.lessPct = !!draft.lessPct;
+  state.edit = draft.edit || null;
+  state.rows.forEach(function (r, i) { if (draft.rows[i] && draft.rows[i].lr) r.lr = true; });
+}
+function saveDraft() { ls.set('mt_draft', { party: $('party').value, mobile: $('mobile').value, rows: state.rows, txn: state.txn, less: state.less, lessPct: state.lessPct, edit: state.edit }); }
+
+/* ========================================================= BACKEND */
+function api(action, data) {
+  var body = Object.assign({ action: action, pin: cfg.pin }, data || {});
+  return fetch(cfg.url, { method: 'POST', body: JSON.stringify(body) })
+    .catch(function () {
+      var e = new Error('No connection to Google Sheet (internet or access setting). In Apps Script: Deploy → Manage deployments → “Who has access” must be “Anyone”.');
+      e.code = 'NET'; throw e;
+    })
+    .then(function (r) { return r.text(); })
+    .then(function (t) {
+      var j;
+      try { j = JSON.parse(t); } catch (x) {
+        var e1 = new Error('Google returned a sign-in / error page instead of data. Set “Who has access” = “Anyone” and “Execute as” = “Me”, then deploy a New version.');
+        e1.code = 'NET'; throw e1;
+      }
+      if (!j.ok) { var e = new Error(j.error || 'Failed'); e.code = j.code; throw e; }
+      return j;
+    });
+}
+function loadInit(quiet) {
+  if (!cfg.url) { openSetup(); return Promise.resolve(); }
+  if (!quiet) busy(true);
+  return api('init').then(function (j) {
+    $('shopName').textContent = j.shop; $('shopPlace').textContent = j.place;
+    state.nextNo = j.nextMemoNo;
+    var vw = $('verWarn');
+    if (j.version !== APP_VER) {
+      vw.hidden = false;
+      vw.innerHTML = '<b>⚠ The Google Sheet is running an old script' + (j.version ? ' (' + esc(j.version) + ')' : '') + '.</b> Saving may fail or be slow.<br>' +
+        'Fix once: Sheet → Extensions → Apps Script → paste the new Code.gs → Save → <b>Deploy → Manage deployments → ✏ Edit → Version: New version → Deploy</b>.';
+    } else vw.hidden = true;
+    if (!iqGet().length) { state.items = j.items || []; ls.set('mt_items', state.items); }
+    state.items.forEach(function (it) { if (it.u) learnUnit(it.u); });
+    if (j.parties) { state.parties = j.parties; ls.set('mt_parties', j.parties); }
+    if (j.mobiles) { state.mobiles = j.mobiles; ls.set('mt_mobiles', j.mobiles); }
+    if (typeof j.roundOff === 'boolean') { state.roundOff = j.roundOff; ls.set('mt_round', j.roundOff); }
+    if (state.tab === 'Items') renderItems();
+    renderFavs(); fillUnitList(); calcTotal(); partyChanged(true);
+    state.online = true; showNextNo(); ensureBlocks(); syncQueue(); syncItems();
+  }).catch(function (e) {
+    if (e.code === 'PIN') openSetup('Wrong PIN. Check the PIN row in the Settings sheet.');
+    else if (/setup\(\)/.test(e.message)) openSetup('Sheet not set up yet. In Apps Script, select "setup" and click Run once.');
+    else if (e.code === 'NET' && (state.items.length || !navigator.onLine)) { toast('No internet — billing works offline; memos will upload later.', 4000); }
+    else openSetup(e.message);
+  }).then(function () { busy(false); updateNet(); });
+}
+function findItem(name) {
+  var k = nameKey(name); if (!k) return null;
+  for (var i = 0; i < state.items.length; i++) if (nameKey(state.items[i].n) === k) return state.items[i];
+  return null;
+}
+/* v10: item-list changes are applied on the phone at once and sent to the Sheet in the background */
+function iqGet() { return ls.get('mt_iq', []); }
+function itemOp(action, data) { var q = iqGet(); q.push({ id: newTxn(), action: action, data: data }); ls.set('mt_iq', q); syncItems(); }
+function syncItems() {
+  if (state.iqBusy || !cfg.url || !navigator.onLine) return;
+  var op = iqGet()[0]; if (!op) return;
+  state.iqBusy = true;
+  function drop() { ls.set('mt_iq', iqGet().filter(function (x) { return x.id !== op.id; })); }
+  api(op.action, op.data).then(function () { drop(); return true; }).catch(function (e) {
+    if (e.code === 'NET' || e.code === 'PIN') return false;               // keep it, try again later
+    drop(); state.iqResync = true; toast('Item list: ' + e.message, 5000); return true;
+  }).then(function (go) {
+    state.iqBusy = false;
+    if (!go) return;
+    if (iqGet().length) syncItems();
+    else if (state.iqResync) { state.iqResync = false; loadInit(true); }
+  });
+}
+/* memos uploaded from this phone are kept (last 300) so the Day Book and PDFs are instant */
+function recentGet() { return ls.get('mt_recent', []); }
+function recentPut(m) {
+  if (!m || !m.memoNo) return;
+  var r = recentGet().filter(function (x) { return x.memoNo !== m.memoNo; });
+  m.up = Date.now(); r.push(m);
+  for (var n = 300; n >= 25; n = Math.floor(n / 2)) { try { localStorage.setItem('mt_recent', JSON.stringify(r.slice(-n))); return; } catch (e) { /* storage full: keep fewer */ } }
+}
+function recentFind(no) { return recentGet().filter(function (x) { return x.memoNo === no; })[0]; }
+function learnFromMemo(lines, party, mobile) {
+  if (party && mobile) { state.mobiles[party.toLowerCase()] = mobile; ls.set('mt_mobiles', state.mobiles); }
+  if (party) delete state.lastBills[party.toLowerCase()];
+  lines.forEach(function (l) {
+    var it = findItem(l.p);
+    if (it) { it.r = l.r; it.u = l.u; it.c = (it.c || 0) + 1; it.t = Date.now(); if (l.h) { it.a = it.a || []; if (it.a.indexOf(l.h) < 0) it.a.push(l.h); it._n = null; } }
+    else state.items.push({ n: l.p, r: l.r, u: l.u, c: 1, t: Date.now(), a: l.h ? [l.h] : [] });
+    learnUnit(l.u);
+  });
+  ls.set('mt_items', state.items);
+  if (party && party.toLowerCase() !== 'cash') {
+    state.parties = [party].concat(state.parties.filter(function (p) { return p.toLowerCase() !== party.toLowerCase(); }));
+    ls.set('mt_parties', state.parties);
+  }
+}
+
+/* ===================================================== AUTOCOMPLETE */
+function suggestItems(q) {
+  q = String(q || '').trim().toLowerCase(); if (!q) return [];
+  var qt = q.split(/\s+/), qp = phon(q);
+  return state.items.map(function (it) {
+    var n = String(it.n).toLowerCase(), nt = n.split(/\s+/), s = 0;
+    if (n === q) s = 0; else if (n.indexOf(q) === 0) s = 100;
+    else if (qt.every(function (t) { return nt.some(function (w) { return w.indexOf(t) === 0; }); })) s = 85;
+    else if (n.indexOf(q) >= 0) s = 70;
+    else {
+      var best = 0; nt.forEach(function (w) { best = Math.max(best, sim(phon(w), qp)); });
+      if (best >= 0.7) s = 40 + best * 20;
+      (it.a || []).forEach(function (a) { if (String(a).indexOf(q) === 0) s = Math.max(s, 75); });
+    }
+    return { it: it, s: s ? s + Math.min(10, it.c || 0) / 10 + (it.f ? 1 : 0) : 0 };
+  }).filter(function (x) { return x.s > 0; }).sort(function (a, b) { return b.s - a.s; }).slice(0, 6).map(function (x) { return x.it; });
+}
+function suggestParties(q) {
+  q = String(q || '').trim().toLowerCase(); if (!q) return [];
+  return state.parties.filter(function (p) {
+    var l = p.toLowerCase();
+    return l !== q && (l.indexOf(q) === 0 || l.split(/\s+/).some(function (w) { return w.indexOf(q) === 0; }) || (q.length > 2 && l.indexOf(q) >= 0));
+  }).slice(0, 6);
+}
+function showSug(input, list, fmt) {
+  var box = input.parentNode.querySelector('.sug');
+  if (!box) return;
+  if (!list.length || document.activeElement !== input) { box.hidden = true; box.innerHTML = ''; return; }
+  box.innerHTML = list.map(function (x, i) { return '<button type="button" data-sg="' + i + '">' + fmt(x) + '</button>'; }).join('');
+  box.hidden = false; box._list = list;
+}
+function hideSug(input) { var b = input.parentNode.querySelector('.sug'); if (b) setTimeout(function () { b.hidden = true; }, 180); }
+function itemSugFmt(x) { return (x.f ? '⭐ ' : '') + esc(x.n) + '<span>' + esc(x.u || '') + (x.r ? ' · last ₹' + x.r : '') + '</span>'; }
+document.addEventListener('pointerdown', function (e) {
+  var b = e.target.closest && e.target.closest('[data-sg]'); if (!b) return;
+  e.preventDefault();
+  var box = b.parentNode, input = box.parentNode.querySelector('input'), x = box._list[+b.getAttribute('data-sg')];
+  box.hidden = true;
+  if (input.id === 'party' || input.id === 'dbParty') { input.value = x; input.dispatchEvent(new Event('input', { bubbles: true })); if (input.id === 'party') partyChanged(true); return; }
+  var i = rowIndexOf(input), r = state.rows[i];
+  r.p = x.n; r.amb = null; if (r.f) delete r.f.p;
+  if (x.u && blank(r.u)) { r.u = x.u; if (r.f) delete r.f.u; }
+  render();
+  var q = rowBox(i) && rowBox(i).querySelector('[data-f=q]'); if (q) q.focus();
+});
+function partyFmt(p) { return esc(p) + (state.mobiles[p.toLowerCase()] ? '<span>' + esc(state.mobiles[p.toLowerCase()]) + '</span>' : ''); }
+$('party').addEventListener('input', function () { saveDraft(); showSug(this, suggestParties(this.value), partyFmt); partyChanged(); });
+$('party').addEventListener('blur', function () { hideSug(this); partyChanged(true); });
+$('dbParty').addEventListener('input', function () { showSug(this, suggestParties(this.value), function (p) { return esc(p); }); });
+$('dbParty').addEventListener('blur', function () { hideSug(this); });
+
+/* ============================================ CUSTOMER: mobile + repeat last bill */
+var partyTimer = null;
+function knownParty(n) { n = String(n || '').trim().toLowerCase(); return state.parties.filter(function (p) { return p.toLowerCase() === n; })[0] || ''; }
+function partyChanged(now) {
+  clearTimeout(partyTimer);
+  var p = knownParty($('party').value);
+  if (p && !$('mobile').value.trim() && state.mobiles[p.toLowerCase()]) { $('mobile').value = state.mobiles[p.toLowerCase()]; saveDraft(); }
+  if (!p) { $('repBox').hidden = true; return; }
+  partyTimer = setTimeout(function () { loadLastBill(p); }, now ? 0 : 500);
+}
+function loadLastBill(p) {
+  var k = p.toLowerCase();
+  if (state.lastBills[k]) { showRepeat(p, state.lastBills[k]); return; }
+  if (!cfg.url) return;
+  api('lastBill', { party: p }).then(function (d) { state.lastBills[k] = d; if (knownParty($('party').value) === p) showRepeat(p, d); }).catch(function () {});
+}
+function showRepeat(p, d) {
+  var box = $('repBox');
+  if (!d || !d.found || state.rows.length) { box.hidden = true; return; }
+  box.innerHTML = '↻ Last bill of <b>' + esc(p) + '</b>: ' + esc(d.memoNo) + ' · ' + esc(d.date) + ' · ' + d.lines.length + ' item' + (d.lines.length === 1 ? '' : 's') + ' · ' + inr(d.total) +
+    '<div class="rb"><button class="btn blue sm" data-rep="rates">Repeat with same rates</button><button class="btn sec sm" data-rep="items">Items only (rates later)</button></div>';
+  box.hidden = false;
+}
+$('repBox').addEventListener('click', function (e) {
+  var how = e.target.getAttribute('data-rep'); if (!how) return;
+  var d = state.lastBills[knownParty($('party').value).toLowerCase()]; if (!d) return;
+  repeatBill(d, how === 'rates');
+});
+function repeatBill(d, withRates) {
+  if (state.rows.length && !confirm('The bill already has ' + state.rows.length + ' item(s). Add the last bill’s items below them?')) return;
+  var start = state.rows.length;
+  d.lines.forEach(function (l) { state.rows.push(newRow({ p: l.p, q: l.q, u: l.u, r: withRates ? l.r : '', heard: 'from last bill ' + d.memoNo })); });
+  state.touched = state.rows.length - 1; state.open = -1;
+  $('repBox').hidden = true;
+  render(); scrollToRow(start, true);
+  result('✓ ' + d.lines.length + ' item(s) copied from ' + d.memoNo + (withRates ? ' with the same rates — change quantities if needed.' : ' — next: Enter Rates.'), 'ok');
+}
+
+/* ============================================ ROW CHECKS & TOTALS */
+function rowErrors(r) {
+  var e = {};
+  if (blank(r.p)) e.p = 'Item name missing';
+  if (blank(r.q)) e.q = 'Quantity/unit requires confirmation';
+  else if (!(num(r.q) > 0)) e.q = 'Quantity invalid';
+  if (blank(r.u)) e.u = 'Unit missing — select or type unit';
+  if (blank(r.r)) e.r = 'Rate pending';
+  else if (!(num(r.r) > 0)) e.r = 'Rate invalid';
+  if (!blank(r.d)) {
+    var dv = num(r.d), a = rowAmt(r);
+    if (!(dv >= 0) || (r.dp && dv >= 100)) e.d = 'Discount invalid';
+    else if (a !== null && dv > 0 && lineDisc(r) >= a) e.d = 'Discount must be less than the amount';
+  }
+  return e;
+}
+function rowAmt(r) { var q = num(r.q), p = num(r.r); return (q > 0 && p > 0) ? lineAmount(q, r.u, p) : null; }
+function perTxt(u) { return PER_BASE[u] ? '/' + PER_BASE[u] : ''; }
+function lastRateFor(r) {
+  var it = findItem(r.p); if (!it || !(it.r > 0)) return 0;
+  if (it.u && r.u && rateBasis(it.u) !== rateBasis(r.u)) return 0;      // e.g. saved per Packet, now sold per Kg
+  return it.r;
+}
+/* discount on one line: typed as ₹ amount, or % of the line amount (r.dp) */
+function lineDisc(r) {
+  var v = num(r.d), a = rowAmt(r);
+  if (!(v > 0) || a === null) return 0;
+  return r2(r.dp ? a * v / 100 : v);
+}
+function lessInfo(gross) {
+  var s = String(state.less || '').trim(); if (!s) return { v: 0 };
+  var pct = lessIsPct(), v = num(s.replace('%', ''));
+  if (!(v > 0)) return { v: 0, bad: s !== '0' };
+  v = r2(pct ? gross * v / 100 : v);
+  return v >= gross && gross > 0 ? { v: 0, bad: true, pct: pct } : { v: v, pct: pct };
+}
+function hasFlags(r) { return Object.keys(r.f || {}).some(function (k) { return r.f[k]; }) || !!(r.amb && r.amb.length); }
+function hardErr(e) { return Object.keys(e).some(function (k) { return !(k === 'r' && e[k] === 'Rate pending'); }); }
+function showRatePending() { return state.reviewed && state.stage !== 'rates'; }
+function totals() {
+  var g = 0, ld = 0, unpriced = 0;
+  state.rows.forEach(function (r) { var a = rowAmt(r); if (a === null) unpriced++; else { g += a; var d = lineDisc(r); if (d < a) ld += d; } });
+  g = r2(g); ld = r2(ld);
+  var li = lessInfo(r2(g - ld)), less = r2(ld + li.v), after = r2(g - less);
+  var net = state.roundOff ? Math.round(after) : after;
+  return { gross: g, lineDisc: ld, billLess: li.v, less: less, lessBad: !!li.bad, ro: r2(net - after), net: net, unpriced: unpriced };
+}
+function calcTotal() {
+  var t = totals();
+  $('total').textContent = t.net ? inr(t.net).replace(/\.00$/, '') : 'Review ▶';
+  $('totWarn').textContent = t.unpriced ? '⚠ ' + t.unpriced + ' no rate · Review' : (state.rows.length ? 'Review & Save ▶' : 'no items yet');
+  $('btnReview').classList.toggle('warn', !!t.unpriced);
+  $('cnt').textContent = state.rows.length;
+}
+
+/* ===================================================== UNITS */
+function allUnits() {
+  var seen = {}, out = [];
+  function add(u) { u = String(u || '').trim(); if (u && !seen[u.toLowerCase()]) { seen[u.toLowerCase()] = 1; out.push(u); } }
+  UNITS.forEach(add); state.units.forEach(add); state.items.forEach(function (it) { add(it.u); });
+  return out;
+}
+function fillUnitList() { $('unitList').innerHTML = allUnits().map(function (u) { return '<option value="' + esc(u) + '">'; }).join(''); }
+function normUnit(v) { v = String(v || '').trim().replace(/\s+/g, ' '); if (!v) return ''; var u = learnUnit(v) || titleCase(v.toLowerCase()); rememberUnit(u); return u; }
+function rememberUnit(u) {
+  if (u && UNIT_DEF.every(function (d) { return d[0] !== u; }) && state.units.indexOf(u) < 0) { state.units.push(u); ls.set('mt_units', state.units); fillUnitList(); }
+}
+var QUICK_UNITS = ['Kg', 'Piece', 'Packet', 'Litre', 'Gram'];
+
+/* ===================================================== ITEM LIST (cards on phone, table on wide screens) */
+function isWide() { return window.innerWidth / ([1, 1.15, 1.3][state.zoom] || 1) >= 700; }
+function rowBox(i) { return $('list').querySelector((state.wide ? 'tr.tr' : '.it') + '[data-i="' + i + '"]'); }
+function rowIndexOf(el) { var b = el.closest('[data-i]'); return b ? +b.getAttribute('data-i') : -1; }
+function fieldCls(r, k) {
+  var e = rowErrors(r), f = r.f || {};
+  var isErr = e[k] && !(k === 'r' && e[k] === 'Rate pending' && !showRatePending());
+  return isErr ? ' bad' : (f[k] ? ' chk' : '');
+}
+function issHtml(r) {
+  var e = rowErrors(r), f = r.f || {}, m = [];
+  ['p', 'q', 'u'].forEach(function (k) { if (e[k]) m.push('<div class="e">✕ ' + esc(e[k]) + '</div>'); if (f[k] && !(k === 'u' && e.u)) m.push('<div class="w">⚠ ' + esc(f[k]) + '</div>'); });
+  if (e.r && e.r !== 'Rate pending') m.push('<div class="e">✕ ' + esc(e.r) + '</div>');
+  if (e.r === 'Rate pending' && showRatePending()) m.push('<div class="e">✕ Rate pending</div>');
+  if (f.r) m.push('<div class="w">⚠ ' + esc(f.r) + '</div>');
+  if (e.d) m.push('<div class="e">✕ ' + esc(e.d) + '</div>');
+  var chips = '';
+  if (r.amb && r.amb.length) chips += r.amb.map(function (n) { return '<button class="chip" data-pick="' + esc(n) + '">' + esc(n) + '</button>'; }).join('');
+  if (blank(r.u)) chips += QUICK_UNITS.map(function (u) { return '<button class="chip" data-qu="' + esc(u) + '">' + esc(u) + '</button>'; }).join('') + '<button class="chip" data-act="unit">Other…</button>';
+  if (hasFlags(r)) chips += '<button class="chip g" data-act="ok">✓ Confirm</button>';
+  if (!m.length && !chips) return '';
+  return '<div class="iss">' + m.join('') + (chips ? '<div>' + chips + '</div>' : '') + '</div>';
+}
+function rowClass(r, i, base) {
+  var e = rowErrors(r), c = base;
+  if (hardErr(e) || (showRatePending() && e.r)) c += ' rerr';
+  else if (hasFlags(r)) c += ' flag';
+  if (state.stage === 'rates' && i === state.cur) c += ' cur';
+  return c;
+}
+/* --- phone cards --- */
+function sumHtml(r, i) {
+  var a = rowAmt(r);
+  var q = blank(r.q) ? '<span class="miss">Qty?</span>' : '<b>' + esc(fmtQ(r.q)) + '</b>';
+  var u = blank(r.u) ? '<span class="miss">Unit?</span>' : esc(r.u);
+  var rt = blank(r.r) ? '<span style="color:var(--muted)">rate —</span>' : (num(r.r) > 0 ? '₹' + esc(r.r) + perTxt(r.u) + (r.lr ? ' <span class="lr">last rate</span>' : '') : '<span class="miss">rate?</span>');
+  return '<div class="sum"><span class="sl">' + (i + 1) + '</span>' +
+    '<div class="mid" data-act="toggle"><div class="nm">' + (blank(r.p) ? '<span class="miss" style="color:var(--bad)">Item name?</span>' : esc(r.p)) + '</div>' +
+    '<div class="sb">' + q + ' ' + u + ' × ' + rt + (lineDisc(r) ? ' <span class="dsc">− ₹' + n2(lineDisc(r)) + '</span>' : '') + ' <span style="float:right;font-weight:700;color:var(--ink)">' + (a === null ? '' : inr(r2(a - lineDisc(r)))) + '</span></div></div>' +
+    '<div class="ia"><button data-act="toggle" title="Edit">✎</button><button class="del" data-act="del" title="Delete">✕</button></div></div>';
+}
+function edHtml(r) {
+  return '<div class="ed">' +
+    '<div class="acw"><input class="inp' + fieldCls(r, 'p') + '" type="text" data-f="p" value="' + esc(r.p) + '" placeholder="Item name" autocomplete="off"><div class="sug" hidden></div></div>' +
+    '<div class="g3">' +
+    '<label>Qty<input class="inp' + fieldCls(r, 'q') + '" inputmode="decimal" data-f="q" value="' + esc(r.q) + '"></label>' +
+    '<label>Unit<span class="urow"><input class="inp' + fieldCls(r, 'u') + '" type="text" list="unitList" data-f="u" value="' + esc(r.u) + '" placeholder="type" autocomplete="off"><button type="button" data-act="unit" title="Choose unit">▾</button></span></label>' +
+    '<label>Rate ₹' + perTxt(r.u) + '<input class="inp' + fieldCls(r, 'r') + '" inputmode="decimal" data-f="r" value="' + esc(r.r) + '"></label>' +
+    '</div>' +
+    '<div class="drow"><label>Discount<span class="urow"><input class="inp' + fieldCls(r, 'd') + '" inputmode="decimal" data-f="d" value="' + esc(r.d || '') + '" placeholder="0"><button type="button" class="pct" data-act="dp" title="Switch ₹ / %">' + (r.dp ? '%' : '₹') + '</button></span></label></div>' +
+    (r.heard ? '<div class="hl">Heard: “' + esc(r.heard) + '”</div>' : '') +
+    '<div class="acts">' +
+    '<button data-act="up" title="Move up">↑</button><button data-act="down" title="Move down">↓</button>' +
+    '<button data-act="dup" title="Duplicate">⧉ Copy</button>' +
+    '<button class="done" data-act="close">Done</button></div></div>';
+}
+function cardHtml(r, i) { return '<div class="' + rowClass(r, i, 'it') + '" data-i="' + i + '">' + sumHtml(r, i) + issHtml(r) + (state.open === i ? edHtml(r) : '') + '</div>'; }
+/* --- wide table --- */
+function trHtml(r, i) {
+  var a = rowAmt(r), iss = issHtml(r);
+  return '<tr class="' + rowClass(r, i, 'tr') + '" data-i="' + i + '"><td class="sl">' + (i + 1) + '</td>' +
+    '<td><div class="acw"><input class="ti' + fieldCls(r, 'p') + '" data-f="p" value="' + esc(r.p) + '" placeholder="Item name" autocomplete="off"><div class="sug" hidden></div></div></td>' +
+    '<td><input class="ti r' + fieldCls(r, 'q') + '" data-f="q" inputmode="decimal" value="' + esc(r.q) + '"></td>' +
+    '<td><input class="ti' + fieldCls(r, 'u') + '" data-f="u" list="unitList" value="' + esc(r.u) + '" autocomplete="off"></td>' +
+    '<td><input class="ti r' + fieldCls(r, 'r') + '" data-f="r" inputmode="decimal" value="' + esc(r.r) + '" placeholder="' + (PER_BASE[r.u] ? 'per ' + PER_BASE[r.u] : '') + '" title="' + (PER_BASE[r.u] ? 'Rate per ' + PER_BASE[r.u] : 'Rate') + '"></td>' +
+    '<td><span class="urow"><input class="ti r' + fieldCls(r, 'd') + '" data-f="d" inputmode="decimal" value="' + esc(r.d || '') + '" placeholder="0"><button type="button" class="pct sm" data-act="dp" title="Switch ₹ / %">' + (r.dp ? '%' : '₹') + '</button></span></td>' +
+    '<td class="am">' + (a === null ? '—' : inr(r2(a - lineDisc(r)))) + '</td>' +
+    '<td class="ta"><button data-act="menu" title="Move / copy">⋯</button><button class="del" data-act="del" title="Delete">✕</button></td></tr>' +
+    (iss ? '<tr class="tiss" data-i="' + i + '"><td></td><td colspan="7">' + iss + '</td></tr>' : '');
+}
+function render() {
+  state.wide = isWide();
+  var L = $('list');
+  if (!state.rows.length) L.innerHTML = '<div class="empty">No items yet.<br>Tap a quick item below, or tap <b>🎤 Speak</b> and say (e.g. “Haldi 100 gram 5 kg”), or tap <b>+ Add Item</b>.</div>';
+  else if (state.wide) L.innerHTML = '<table class="itab"><colgroup><col class="csl"><col><col class="cq"><col class="cu"><col class="cr"><col class="cd"><col class="ca"><col class="cx"></colgroup><thead><tr><th>Sl.</th><th>Particulars</th><th class="r">Qty</th><th>Unit</th><th class="r">Rate (₹)</th><th class="r">Disc</th><th class="r">Amount (₹)</th><th></th></tr></thead><tbody>' + state.rows.map(trHtml).join('') + '</tbody></table>';
+  else L.innerHTML = state.rows.map(cardHtml).join('');
+  calcTotal(); saveDraft(); updateStageUI(); renderFavs(); updateCust(); updateEditBar(); fitDock();
+  if (state.rows.length) $('repBox').hidden = true;
+}
+/* customer card: one line once items exist (tap to edit) */
+function updateCust() {
+  var c = $('custCard'), mini = state.rows.length > 0 && !c.contains(document.activeElement) && !(mic.want && (mic.mode === 'customer' || mic.mode === 'mobile'));
+  c.classList.toggle('mini', mini);
+  var p = $('party').value.trim() || 'Cash', m = $('mobile').value.trim();
+  $('cmText').innerHTML = '<b>' + esc(p) + '</b>' + (m ? ' <span>· ' + esc(m) + '</span>' : '');
+}
+$('custMini').onclick = function () { $('custCard').classList.remove('mini'); $('party').focus(); };
+$('custCard').addEventListener('focusout', function () { setTimeout(updateCust, 250); });
+$('party').addEventListener('change', function () { this.value = smartCase(this.value); saveDraft(); });
+/* refresh one row without rebuilding its inputs (keeps keyboard focus) */
+function refreshRow(i) {
+  var box = rowBox(i); if (!box) return;
+  var r = state.rows[i];
+  if (state.wide) {
+    box.className = rowClass(r, i, 'tr');
+    var a = rowAmt(r); box.querySelector('.am').textContent = a === null ? '—' : inr(r2(a - lineDisc(r)));
+    ['p', 'q', 'u', 'r', 'd'].forEach(function (k) { var el = box.querySelector('[data-f=' + k + ']'); if (el) el.className = 'ti' + (k === 'q' || k === 'r' || k === 'd' ? ' r' : '') + fieldCls(r, k); });
+    var next = box.nextElementSibling, iss = issHtml(r);
+    if (next && next.classList.contains('tiss')) next.remove();
+    if (iss) { var tb = document.createElement('tbody'); tb.innerHTML = '<tr class="tiss" data-i="' + i + '"><td></td><td colspan="7">' + iss + '</td></tr>'; box.parentNode.insertBefore(tb.firstChild, box.nextSibling); }
+    return;
+  }
+  box.className = rowClass(r, i, 'it');
+  var tmp = document.createElement('div'); tmp.innerHTML = sumHtml(r, i) + issHtml(r);
+  box.replaceChild(tmp.firstChild, box.querySelector('.sum'));
+  var oldIss = box.querySelector('.iss'); if (oldIss) box.removeChild(oldIss);
+  if (tmp.firstChild) box.insertBefore(tmp.firstChild, box.querySelector('.ed'));
+  var ed = box.querySelector('.ed');
+  if (ed) ['p', 'q', 'u', 'r', 'd'].forEach(function (k) { var el = ed.querySelector('[data-f=' + k + ']'); if (el) el.className = 'inp' + fieldCls(r, k); });
+}
+function scrollToRow(i, flash) {
+  var box = rowBox(i); if (!box) return;
+  if (flash) { box.classList.remove('new'); void box.offsetWidth; box.classList.add('new'); }
+  box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+window.addEventListener('resize', function () { if (isWide() !== state.wide && !document.activeElement.closest('#list')) render(); fitDock(); });
+
+$('list').addEventListener('input', function (e) {
+  var f = e.target.getAttribute('data-f'); if (!f) return;
+  var i = rowIndexOf(e.target), r = state.rows[i];
+  r[f] = e.target.value; if (r.f) delete r.f[f];
+  if (f === 'p') {
+    r.amb = null;
+    var it = findItem(r.p);
+    if (it && blank(r.u) && it.u) { r.u = it.u; if (r.f) delete r.f.u; var ue = rowBox(i).querySelector('[data-f=u]'); if (ue) ue.value = r.u; }
+    showSug(e.target, suggestItems(r.p), itemSugFmt);
+  }
+  if (f === 'q' && state.awaitQty === i) state.awaitQty = -1;
+  if (f === 'r') delete r.lr;
+  if (f === 'd' && /%/.test(r.d)) { r.d = r.d.replace(/%/g, ''); r.dp = true; e.target.value = r.d; var tb = rowBox(i).querySelector('[data-act=dp]'); if (tb) tb.textContent = '%'; }
+  state.touched = i;
+  refreshRow(i); calcTotal(); saveDraft(); updateStageUI();
+});
+function smartCase(v) {
+  v = String(v || '').replace(/\s+/g, ' ').trim();
+  return v && (v === v.toLowerCase() || v === v.toUpperCase()) ? titleCase(v.toLowerCase()) : v;
+}
+$('list').addEventListener('change', function (e) {
+  var f = e.target.getAttribute('data-f'); if (f !== 'u' && f !== 'p') return;
+  var i = rowIndexOf(e.target), r = state.rows[i];
+  if (f === 'p') { r.p = smartCase(e.target.value); e.target.value = r.p; saveDraft(); return; }
+  r.u = normUnit(e.target.value); e.target.value = r.u; if (r.f) delete r.f.u;
+  if (state.wide) render(); else refreshRow(i);
+  saveDraft();
+});
+$('list').addEventListener('focusout', function (e) { if (e.target.getAttribute('data-f') === 'p') hideSug(e.target); });
+$('list').addEventListener('focusin', function (e) { var i = rowIndexOf(e.target); if (i >= 0) state.touched = i; });
+$('list').addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter') return;
+  var f = e.target.getAttribute('data-f'); if (!f) return;
+  e.preventDefault();
+  var i = rowIndexOf(e.target), box = rowBox(i), order = ['p', 'q', 'u', 'r', 'd'], n = order[order.indexOf(f) + 1];
+  if (n && !box.querySelector('[data-f=' + n + ']')) n = null;
+  if (f === 'u') { var r = state.rows[i]; r.u = normUnit(e.target.value); e.target.value = r.u; refreshRow(i); }
+  if (n) box.querySelector('[data-f=' + n + ']').focus();
+  else if (state.wide) { var nx = rowBox(i + 1); if (nx) nx.querySelector('[data-f=q]').focus(); else e.target.blur(); }
+  else { state.open = -1; render(); }
+});
+$('list').addEventListener('click', function (e) {
+  var t = e.target.closest('[data-act],[data-pick],[data-qu]'); if (!t) return;
+  var i = rowIndexOf(t); if (i < 0) return;
+  var r = state.rows[i], act = t.getAttribute('data-act'), pick = t.getAttribute('data-pick'), qu = t.getAttribute('data-qu');
+  state.touched = i;
+  if (pick) { r.p = pick; r.amb = null; if (r.f) delete r.f.p; var it = findItem(pick); if (it && blank(r.u) && it.u) { r.u = it.u; if (r.f) delete r.f.u; } render(); return; }
+  if (qu) { setUnit(i, qu); return; }
+  if (act === 'toggle') { state.open = state.open === i ? -1 : i; render(); if (state.open === i) { scrollToRow(i); } return; }
+  if (act === 'unit') { openUnit({ type: 'row', i: i }); return; }
+  if (act === 'dp') { r.dp = !r.dp; t.textContent = r.dp ? '%' : '₹'; refreshRow(i); calcTotal(); saveDraft(); return; }
+  if (act === 'menu') { openRowMenu(i); return; }
+  if (act === 'close') { state.open = -1; render(); return; }
+  if (act === 'del') { deleteRow(i); return; }
+  rowAction(i, act);
+});
+function rowAction(i, act) {
+  var rows = state.rows, r = rows[i];
+  if (act === 'ok') { r.f = {}; r.amb = null; }
+  else if (act === 'dup') { rows.splice(i + 1, 0, JSON.parse(JSON.stringify(r))); if (state.open === i) state.open = i + 1; }
+  else if (act === 'up' && i > 0) { rows.splice(i - 1, 0, rows.splice(i, 1)[0]); movePointer(i, i - 1); if (state.open === i) state.open = i - 1; }
+  else if (act === 'down' && i < rows.length - 1) { rows.splice(i + 1, 0, rows.splice(i, 1)[0]); movePointer(i, i + 1); if (state.open === i) state.open = i + 1; }
+  else if (act === 'del') { deleteRow(i); return; }
+  render();
+}
+function deleteRow(i) {
+  var gone = state.rows.splice(i, 1)[0];
+  state.open = -1; fixPointersAfterDelete(i); render();
+  toast('Deleted: ' + (gone.p || 'blank row'), 5000, { label: 'Undo', fn: function () { state.rows.splice(Math.min(i, state.rows.length), 0, gone); render(); scrollToRow(Math.min(i, state.rows.length - 1), true); } });
+}
+function openRowMenu(i) {
+  state.menuRow = i; var r = state.rows[i];
+  $('rmTitle').textContent = (i + 1) + '. ' + (r.p || 'Item');
+  $('rmOk').hidden = !hasFlags(r);
+  showOv('ovRowMenu');
+}
+document.querySelector('#ovRowMenu').addEventListener('click', function (e) { var a = e.target.getAttribute('data-rm'); if (!a) return; showOv('ovRowMenu', false); rowAction(state.menuRow, a); });
+function setUnit(i, u) {
+  var r = state.rows[i]; if (!r) return;
+  r.u = normUnit(u); if (r.f) delete r.f.u;
+  render();
+}
+function fixPointersAfterDelete(i) {
+  ['cur', 'lastRated', 'touched', 'awaitQty'].forEach(function (k) { if (state[k] === i) state[k] = -1; else if (state[k] > i) state[k]--; });
+}
+function movePointer(a, b) {
+  ['cur', 'lastRated', 'touched', 'awaitQty'].forEach(function (k) { if (state[k] === a) state[k] = b; else if (state[k] === b) state[k] = a; });
+}
+$('btnAdd').onclick = function () {
+  state.rows.push(newRow()); state.touched = state.rows.length - 1; if (!isWide()) state.open = state.touched; render();
+  var el = rowBox(state.touched) && rowBox(state.touched).querySelector('[data-f=p]'); if (el) { el.focus(); scrollToRow(state.touched); }
+};
+$('btnMore').onclick = function () { showOv('ovMore'); };
+$('mClearInc').onclick = function () {
+  var bad = state.rows.filter(function (r) { return blank(r.p) || blank(r.q); }).length;
+  showOv('ovMore', false);
+  if (!bad) { toast('No incomplete rows (item name or quantity missing).'); return; }
+  if (!confirm('Remove ' + bad + ' row(s) with missing item name or quantity?')) return;
+  state.rows = state.rows.filter(function (r) { return !(blank(r.p) || blank(r.q)); });
+  state.cur = state.lastRated = state.touched = state.open = state.awaitQty = -1;
+  render();
+};
+$('mClear').onclick = function () {
+  showOv('ovMore', false);
+  if (!state.rows.length && !$('party').value) return;
+  if (confirm('Clear the whole bill?')) resetBill();
+};
+function resetBill() {
+  micStop(); state.rows = []; $('party').value = ''; $('mobile').value = ''; $('repBox').hidden = true; $('cHeard').textContent = '';
+  state.stage = 'items'; state.cur = state.lastRated = state.touched = state.open = state.awaitQty = -1; state.reviewed = false; state.less = ''; state.lessPct = false;
+  state.txn = newTxn(); state.mode = 'batch'; setSeg('modeSeg', 'data-m', 'batch');
+  result('', ''); heard(''); render();
+}
+
+/* ===================================================== EDIT A SAVED MEMO */
+function updateEditBar() {
+  var b = $('editBar'), e = state.edit;
+  b.hidden = !e;
+  if (e) b.innerHTML = '<b>✎ Editing ' + esc(e.memoNo) + '</b><span>· ' + esc(e.date) + ' — saving replaces this memo (same number)</span><button id="editCancel">Cancel edit</button>';
+  showNextNo();
+  $('repBox').hidden = $('repBox').hidden || !!e;
+}
+$('editBar').addEventListener('click', function (ev) {
+  if (ev.target.id !== 'editCancel') return;
+  if (!confirm('Discard the changes to ' + state.edit.memoNo + '? The saved memo stays as it was.')) return;
+  endEdit(); toast('Edit cancelled — memo unchanged');
+});
+function startEdit(m) {
+  if (!m) return;
+  if (!navigator.onLine) { toast('Editing a saved memo needs internet.', 3500); return; }
+  if (m.cancelled) { toast('A cancelled memo cannot be edited.'); return; }
+  if (state.edit) { toast('Finish or cancel the current edit first.'); return; }
+  if (state.rows.length || $('party').value.trim()) ls.set('mt_stash', { party: $('party').value, mobile: $('mobile').value, rows: state.rows, txn: state.txn, less: state.less, lessPct: state.lessPct });
+  micStop();
+  state.edit = { memoNo: m.memoNo, date: m.date, txn: newTxn() };
+  state.rows = (m.lines || []).map(function (l) { return newRow({ p: l.p, q: l.q, u: l.u, r: l.r, d: l.d > 0 ? String(l.d) : '' }); });
+  $('party').value = m.party && m.party !== 'Cash' ? m.party : ''; $('mobile').value = m.mobile || '';
+  var ldSum = r2((m.lines || []).reduce(function (t, l) { return t + (Number(l.d) || 0); }, 0)), bl = r2((Number(m.less) || 0) - ldSum);
+  state.less = bl > 0 ? String(bl) : ''; state.lessPct = false;
+  state.stage = 'items'; state.cur = state.lastRated = state.touched = state.open = state.awaitQty = -1; state.reviewed = false;
+  if (state.tab !== 'Bill') document.querySelector('#tabs [data-tab=Bill]').click();
+  render(); window.scrollTo(0, 0);
+  result('✎ Editing ' + m.memoNo + ' — change items, rates or customer, then Review & Save.', 'ok');
+}
+function endEdit() {
+  state.edit = null;
+  var st = ls.get('mt_stash', null); ls.set('mt_stash', null);
+  resetBill();
+  if (st) {
+    state.rows = (st.rows || []).map(function (r) { return newRow(r); });
+    $('party').value = st.party || ''; $('mobile').value = st.mobile || ''; state.txn = st.txn || newTxn(); state.less = st.less || ''; state.lessPct = !!st.lessPct;
+    render(); toast('Your earlier unsaved bill is back.', 3500);
+  }
+  updateEditBar();
+}
+$('dEdit').onclick = function () {
+  var m = state.lastMemo;
+  if (state.lastTxn && qGet().some(function (e) { return e.txn === state.lastTxn; })) { toast(navigator.onLine ? 'This memo is still uploading — edit it in a moment.' : 'This memo is not uploaded yet (offline). Edit it when internet is back.', 4500); return; }
+  showOv('ovDone', false); startEdit(m);
+};
+
+/* ===================================================== FAVOURITES / FREQUENT ITEMS */
+function favItems() {
+  var fav = state.items.filter(function (it) { return it.f; }).sort(function (a, b) { return (b.c || 0) - (a.c || 0); });
+  var rest = state.items.filter(function (it) { return !it.f && (it.c || 0) > 0; }).sort(function (a, b) { return (b.c || 0) - (a.c || 0) || (b.t || 0) - (a.t || 0); });
+  return fav.concat(rest).slice(0, 10);
+}
+function renderFavs() {
+  var list = favItems(), el = $('favs');
+  el.hidden = !list.length || state.tab !== 'Bill';
+  el.innerHTML = list.map(function (it) { return '<button class="fchip' + (it.f ? ' st' : '') + '" data-fav="' + esc(it.n) + '">' + (it.f ? '⭐ ' : '') + esc(it.n) + '</button>'; }).join('');
+}
+$('favs').addEventListener('click', function (e) {
+  var n = e.target.closest('[data-fav]'); if (!n) return;
+  var it = state.items.filter(function (x) { return x.n === n.getAttribute('data-fav'); })[0]; if (!it) return;
+  var row = newRow({ p: it.n, u: it.u || '', heard: 'tapped' });
+  state.rows.push(row); var i = state.rows.length - 1;
+  state.touched = i; state.awaitQty = i;
+  if (!mic.want && !isWide()) state.open = i;
+  render(); scrollToRow(i, true);
+  if (navigator.vibrate) navigator.vibrate(20);
+  if (mic.want) result('➕ ' + it.n + ' — now say the quantity, e.g. “5 kg”', 'ok');
+  else { result('➕ ' + it.n + ' — enter the quantity', 'ok'); var q = rowBox(i).querySelector('[data-f=q]'); if (q) q.focus(); }
+});
+
+/* ===================================================== UNIT PICKER */
+function openUnit(target) {
+  state.unitTarget = target;
+  var cur = target.type === 'row' || target.type === 'review' ? (state.rows[target.i] || {}).u : $('ieUnit').value;
+  var nm = target.type === 'item' ? $('ieName').value : (state.rows[target.i] || {}).p;
+  $('unTitle').textContent = 'Unit' + (nm ? ' — ' + nm : '');
+  $('unChips').innerHTML = allUnits().map(function (u) { return '<button class="chip' + (u === cur ? ' sel' : '') + '" data-un="' + esc(u) + '">' + esc(u) + '</button>'; }).join('');
+  $('unOther').value = ''; $('unNote').textContent = 'Type any unit, or pick one. New units are remembered for next time.';
+  showOv('ovUnit');
+}
+function unitChosen(u) {
+  u = String(u || '').trim(); if (!u) return;
+  var t = state.unitTarget; showOv('ovUnit', false);
+  u = normUnit(u);
+  if (t.type === 'row') setUnit(t.i, u);
+  else if (t.type === 'item') { $('ieUnit').value = u; }
+  else if (t.type === 'review') { setUnit(t.i, u); openReview(true); }
+}
+$('unChips').addEventListener('click', function (e) { var u = e.target.getAttribute('data-un'); if (u) unitChosen(u); });
+$('unOk').onclick = function () { unitChosen($('unOther').value); };
+$('unOther').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('unOk').click(); } });
+$('unMic').onclick = function () { if (micStart('unit', true)) $('unNote').textContent = 'Listening… say the unit, e.g. “carton”.'; };
+
+/* ========================================================= HEARD */
+function heard(text, interim) {
+  var h = $('heard1'), html;
+  if (!text) html = mic.want ? '<span class="ph">Listening… speak now</span>' : '<span class="ph">🎤 Speak, e.g. “Haldi 100 gram 5 kg”</span>';
+  else html = interim ? '<i>“' + esc(text) + '…”</i>' : 'Heard: <b>“' + esc(text) + '”</b>';
+  h.innerHTML = html;
+  if (state.stage === 'rates') $('rpHeard').innerHTML = text ? html : (mic.want ? 'Listening… say the rate' : '');
+}
+function result(msg, kind) { var h = $('heard2'); h.textContent = msg || ''; h.className = 'h2 ' + (kind || ''); state.lastMsg = msg; fitDock(); }
+function logIt(text, res) {
+  var d = new Date(), t = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2);
+  state.log.push({ t: t, s: text, r: res }); if (state.log.length > 300) state.log.shift();
+  $('btnLog').textContent = 'log (' + state.log.length + ')';
+}
+function say(text, msg, kind) { result(msg, kind); logIt(text, msg); }
+$('btnLog').onclick = function () {
+  $('logList').innerHTML = state.log.length ? state.log.slice().reverse().map(function (l) { return '<li><span>' + l.t + '</span> “' + esc(l.s) + '” → ' + esc(l.r) + '</li>'; }).join('') : '<li>Nothing heard yet.</li>';
+  showOv('ovLog');
+};
+$('btnHelp').onclick = function () { showOv('ovHelp'); };
+function fitDock() { var h = $('dock').offsetHeight || 190; document.documentElement.style.setProperty('--dockH', h + 'px'); }
+window.addEventListener('resize', fitDock);
+
+/* ========================================================= MIC ENGINE */
+var mic = { want: false, mode: '', rec: null, on: false, lastFinal: '', lastAt: 0, lastSpeech: 0, errs: 0, resume: '' };
+function micStart(mode, single) {
+  if (!SR) { toast('Voice input needs Google Chrome. You can still type everything.', 4000); return false; }
+  if (!navigator.onLine) { toast('Voice needs internet. Offline: tap quick items or + Add Item and type — the memo will upload later.', 5000); updateStageUI(); return false; }
+  var resume = single && mic.want && mic.mode !== mode ? mic.mode : '';
+  micStop(true);
+  mic.mode = mode; mic.want = true; mic.errs = 0; mic.lastSpeech = Date.now(); mic.resume = resume;
+  spin(); updateStageUI(); heard(''); return true;
+}
+function micStop(silent) {
+  mic.want = false;
+  if (mic.rec) { try { mic.rec.onend = null; mic.rec.abort(); } catch (e) {} }
+  mic.rec = null; mic.on = false;
+  if (!silent) { updateStageUI(); heard(''); }
+}
+function isSingle(m) { return m === 'customer' || m === 'unit' || m === 'mobile'; }
+function spin() {
+  var rec = new SR();
+  mic.rec = rec;
+  rec.lang = state.lang; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+  rec.onstart = function () { mic.on = true; updateStageUI(); };
+  rec.onresult = function (e) {
+    var fin = '', interim = '';
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) fin += e.results[i][0].transcript; else interim += e.results[i][0].transcript;
+    }
+    mic.lastSpeech = Date.now(); mic.errs = 0;
+    if (interim && !fin) heard(interim.trim(), true);
+    if (fin) {
+      fin = fin.trim(); heard(fin);
+      if (fin === mic.lastFinal && Date.now() - mic.lastAt < 2000) return;
+      mic.lastFinal = fin; mic.lastAt = Date.now();
+      onFinal(fin);
+    }
+  };
+  rec.onerror = function (e) {
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { mic.want = false; toast('Microphone permission is blocked. Allow mic for this site in Chrome settings.', 5000); return; }
+    if (e.error === 'network') { if (++mic.errs >= 3) { mic.want = false; toast('Voice needs internet connection. Mic stopped.', 4000); } return; }
+    if (++mic.errs >= 3) { mic.want = false; toast('Voice error: ' + e.error, 3000); }
+  };
+  rec.onend = function () {
+    mic.on = false;
+    if (mic.rec !== rec) return;
+    if (mic.want && !isSingle(mic.mode)) {
+      if (Date.now() - mic.lastSpeech > 90000) { mic.want = false; result('Mic paused — no speech for 90 seconds. Tap 🎤 to continue.', 'warn'); updateStageUI(); heard(''); return; }
+      setTimeout(function () { if (mic.want && mic.rec === rec) spin(); }, 200);
+    } else {
+      var resume = isSingle(mic.mode) ? mic.resume : '';
+      mic.want = false; mic.mode = ''; mic.resume = '';
+      updateStageUI(); heard('');
+      if (resume) micStart(resume);
+    }
+  };
+  try { rec.start(); } catch (err) { toast('Could not start mic: ' + err.message); mic.want = false; updateStageUI(); }
+}
+
+/* ================================================== VOICE DISPATCH */
+function onFinal(text) {
+  if (mic.mode === 'customer') { customerHeard(text); return; }
+  if (mic.mode === 'mobile') { mobileHeard(text); return; }
+  if (mic.mode === 'unit') { var u = parseUnit(text) || titleCase(prep(text).join(' ')).slice(0, 20); $('unOther').value = u; $('unNote').textContent = 'Heard: “' + text + '” — tap Set, or pick a unit above.'; mic.want = false; return; }
+  var c = command(text, state.stage);
+  if (state.stage === 'rates') return rateVoice(text, c);
+  itemVoice(text, c);
+}
+function customerHeard(text) {
+  var tk = prep(text).filter(function (w) { return ['customer', 'party', 'name', 'naam', 'ka', 'hai', 'mobile', 'number', 'phone', 'no', 'पार्टी', 'नाम', 'कस्टमर', 'है', 'मोबाइल', 'नंबर'].indexOf(w) < 0; });
+  var firstDigit = -1;
+  for (var i = 0; i < tk.length; i++) if (/^\d+$/.test(tk[i])) { firstDigit = i; break; }
+  var nameTk = firstDigit >= 0 ? tk.slice(0, firstDigit) : tk, mob = firstDigit >= 0 ? normMobile(digitsFromSpeech(tk.slice(firstDigit))) : '';
+  var n = titleCase(nameTk.join(' '));
+  var known = knownParty(n);
+  $('party').value = known || n;
+  if (mob) $('mobile').value = mob;
+  saveDraft();
+  $('cHeard').innerHTML = 'Heard: “' + esc(text) + '” — edit above if needed';
+  say(text, 'Customer: ' + (known || n) + (mob ? ' · mobile ' + mob : ''), 'ok');
+  mic.want = false;
+  partyChanged(true);
+}
+function mobileHeard(text) {
+  var d = digitsFromSpeech(prep(text)), m = normMobile(d);
+  $('mobile').value = m || d; saveDraft();
+  $('cHeard').innerHTML = 'Heard: “' + esc(text) + '”' + (m ? '' : ' — <b style="color:var(--bad)">not a 10-digit mobile, please check</b>');
+  say(text, m ? 'Mobile: ' + m : 'Mobile not clear: ' + (d || '—'), m ? 'ok' : 'warn');
+  mic.want = false;
+}
+function itemVoice(text, c) {
+  if (c && c.cmd === 'stopItems') { micStop(); say(text, 'Items stopped. ' + state.rows.length + ' item(s). Next: Items Complete – Enter Rates.', 'ok'); return; }
+  if (c && c.cmd === 'startRates') { say(text, 'Starting rate entry…', 'ok'); startRates(); return; }
+  if (c && c.cmd === 'finish') { micStop(); say(text, 'Opening review.', 'ok'); openReview(); return; }
+  if (c && c.cmd === 'repeatBill') {
+    var kp = knownParty($('party').value), lb = kp && state.lastBills[kp.toLowerCase()];
+    if (!kp) { say(text, 'Select a saved customer first, then say “repeat last bill”.', 'warn'); return; }
+    if (!lb || !lb.found) { say(text, 'No earlier bill found for ' + kp + '.', 'warn'); return; }
+    say(text, 'Repeating ' + lb.memoNo, 'ok'); repeatBill(lb, true); return;
+  }
+  if (c && c.cmd === 'undo') {
+    if (!state.rows.length) { say(text, 'Nothing to delete.', 'warn'); return; }
+    var gone = state.rows.pop(); state.touched = state.rows.length - 1; state.open = -1; state.awaitQty = -1; render();
+    say(text, '✓ Deleted last item: ' + (gone.p || '(blank)'), 'ok'); return;
+  }
+  if (c && c.cmd === 'change') { applyChange(text, c, state.touched >= 0 ? state.touched : state.rows.length - 1); return; }
+  // quantity for an item just tapped from the quick buttons
+  var aw = state.rows[state.awaitQty];
+  if (aw && blank(aw.q)) {
+    var qo = qtyOnly(text);
+    if (qo) {
+      aw.q = qo.v; if (qo.u) { aw.u = qo.u; if (aw.f) delete aw.f.u; }
+      var ai = state.awaitQty; state.awaitQty = -1; render(); scrollToRow(ai, true);
+      say(text, '✓ #' + (ai + 1) + ' ' + aw.p + ' · ' + fmtQ(aw.q) + ' ' + (aw.u || '?'), aw.u ? 'ok' : 'warn'); return;
+    }
+  }
+  state.awaitQty = -1;
+  // discount by voice: "discount 11", "less 20 rupaye", "discount 5 percent"
+  var dm = prep(text).join(' ').match(/^(?:discount|less|chhoot|chhut|chut|kam karo|kam kar do)\s+(.+)$/);
+  if (dm) {
+    var pct = /(percent|pratishat|pratisat|parsent|pct)/.test(dm[1]), dv = parseRate(dm[1].replace(/(percent|pratishat|pratisat|parsent|pct)/g, ' '));
+    if (dv) { state.less = String(dv); state.lessPct = pct; saveDraft(); calcTotal(); say(text, '✓ Discount ' + (pct ? dv + '%' : inr(dv)) + ' — shown in Review', 'ok'); return; }
+  }
+  var parts = splitItems(text), added = [];
+  parts.forEach(function (pt) {
+    var p = parseItem(pt, state.items, state.mode);
+    var row = newRow({ p: p.p, q: p.q, u: p.u, r: p.r, heard: parts.length > 1 ? pt + '  (from: ' + text + ')' : text, h: p.h, f: p.f, amb: p.amb });
+    if (!row.p && blank(row.q)) { row.p = pt; row.f = { p: 'Not understood — edit this row' }; }
+    state.rows.push(row); added.push(row);
+  });
+  state.touched = state.rows.length - 1; state.open = -1;
+  render(); scrollToRow(state.rows.length - 1, true);
+  if (navigator.vibrate) navigator.vibrate(30);
+  var warn = false, desc = added.map(function (row, k) {
+    var e = rowErrors(row); if (hasFlags(row) || e.p || e.q || e.u) warn = true;
+    return '#' + (state.rows.length - added.length + k + 1) + ' ' + (row.p || '(no item)') + ' · ' + (blank(row.q) ? '?' : fmtQ(row.q)) + ' ' + (row.u || '?') + (blank(row.r) ? '' : ' · ₹' + row.r);
+  });
+  say(text, (warn ? '⚠ ' : '✓ ') + (added.length > 1 ? added.length + ' items: ' : '') + desc.join('  |  ') + (warn ? ' — check' : ''), warn ? 'warn' : 'ok');
+}
+function applyChange(text, c, i) {
+  var r = state.rows[i];
+  if (!r) { say(text, 'No item to correct.', 'warn'); return; }
+  var label = '#' + (i + 1) + ' ' + (r.p || '');
+  if (c.field === 'q') {
+    var q = parseQty(c.value);
+    if (!q) { say(text, 'Could not understand the quantity in “' + c.value + '”.', 'bad'); return; }
+    r.q = q.v; if (r.f) delete r.f.q; if (q.u) { r.u = q.u; if (r.f) delete r.f.u; }
+    render(); say(text, '✓ Quantity of ' + label + ' → ' + q.v + (q.u ? ' ' + q.u : ''), 'ok');
+  } else if (c.field === 'r') {
+    var v = parseRate(c.value);
+    if (v === null) { say(text, 'Could not understand the rate in “' + c.value + '”.', 'bad'); return; }
+    r.r = v; if (r.f) delete r.f.r;
+    render(); if (state.stage === 'rates') announce();
+    say(text, '✓ Rate of ' + label + ' → ' + inr(v), 'ok');
+  } else if (c.field === 'u') {
+    var u = parseUnit(c.value), isNew = false;
+    if (!u) { var raw = prep(c.value).join(' '); if (!raw || raw.split(' ').length > 2) { say(text, 'Unit “' + c.value + '” not understood.', 'bad'); return; } u = titleCase(raw); isNew = true; }
+    setUnit(i, u);
+    say(text, '✓ Unit of ' + label + ' → ' + r.u + (isNew ? ' (new unit saved)' : ''), 'ok');
+  }
+  scrollToRow(i, true);
+}
+
+/* ============================================== RATE SCREEN (one item at a time) */
+function blankRate(r) { return !(num(r.r) > 0); }
+function nextBlank(after, excludeAfter) {
+  var rows = state.rows, i;
+  for (i = after + 1; i < rows.length; i++) if (blankRate(rows[i])) return i;
+  for (i = 0; i <= after && i < rows.length; i++) if (blankRate(rows[i]) && !(excludeAfter && i === after)) return i;
+  return -1;
+}
+function remaining() { return state.rows.filter(blankRate).length; }
+function startRates(skipPre) {
+  if (!state.rows.length) { toast('Enter items first.'); result('Enter items first.', 'warn'); return; }
+  micStop(true);
+  var first = nextBlank(-1, false);
+  if (first < 0) { result('All items already have rates.', 'ok'); openReview(); return; }
+  if (!skipPre) {
+    var blanks = [], known = [];
+    state.rows.forEach(function (r, i) { if (blankRate(r)) { blanks.push(i); if (lastRateFor(r) > 0) known.push(i); } });
+    if (known.length) {
+      var ask = blanks.length - known.length;
+      $('preText').innerHTML = '<b>' + known.length + ' of ' + blanks.length + '</b> item' + (blanks.length === 1 ? '' : 's') + ' already have a last rate.<br>' +
+        (ask ? 'Use them and ask only <b>' + ask + '</b> new rate' + (ask === 1 ? '' : 's') + '?' : 'Use them and go straight to Review?') +
+        '<div class="note">You will still see and can change every rate in Review.</div>';
+      $('preUse').textContent = ask ? '✓ Use last rates · ask only ' + ask : '✓ Use last rates · go to Review';
+      $('preAll').textContent = 'Ask all ' + blanks.length + ' rates';
+      state.preKnown = known;
+      showOv('ovPre'); return;
+    }
+  }
+  state.stage = 'rates'; state.cur = first; state.open = -1;
+  $('rpDone').hidden = true; $('ovRate').classList.remove('took');
+  render(); showOv('ovRate'); announce();
+  if (SR && navigator.onLine) micStart('rates'); else $('rateIn').focus();
+}
+function announce() {
+  var r = state.rows[state.cur]; if (!r) return;
+  var lastR = lastRateFor(r), rem = remaining(), total = state.rows.length, done = total - rem;
+  $('rpStep').textContent = 'Item ' + (state.cur + 1) + ' of ' + total + ' · ' + rem + ' left';
+  $('rpBar').style.width = Math.round(done / total * 100) + '%';
+  $('rpName').textContent = r.p || '(no name)';
+  $('rpQty').textContent = (blank(r.q) ? '?' : fmtQ(r.q)) + ' ' + (r.u || '');
+  $('rpBasis').textContent = r.u ? 'Rate per ' + rateBasis(r.u) : '';
+  $('rateIn').placeholder = '';
+  $('rateIn').value = num(r.r) > 0 ? r.r : '';
+  rateAmt();
+  var same = $('rateSame');
+  if (lastR > 0) { same.hidden = false; same.textContent = 'Use last rate ₹' + lastR + perTxt(r.u); same._v = lastR; } else same.hidden = true;
+  $('rpHeard').innerHTML = mic.want ? 'Listening… say the rate' : '';
+  $('rPrev').disabled = state.cur <= 0;
+  if (!mic.want) $('rateIn').focus();
+  var b = rowBox(state.cur); state.rows.forEach(function (x, i) { var bx = rowBox(i); if (bx) bx.className = rowClass(x, i, state.wide ? 'tr' : 'it'); });
+  updateStageUI();
+}
+function rateAmt() {
+  var r = state.rows[state.cur], v = num($('rateIn').value), q = r ? num(r.q) : NaN;
+  $('rpAmt').textContent = v > 0 && q > 0 ? '= ' + inr(lineAmount(q, r.u, v)) : '';
+}
+$('rateIn').addEventListener('input', rateAmt);
+/* after a rate is taken the line shows its rate & amount for a moment, then moves on */
+function flushMove() { if (state.moveT) { clearTimeout(state.moveT); var f = state.moveFn; state.moveT = null; state.moveFn = null; if (f) f(); } }
+function laterMove(fn) { flushMove(); state.moveFn = fn; state.moveT = setTimeout(function () { var f = state.moveFn; state.moveT = null; state.moveFn = null; if (f) f(); }, 800); }
+function showRateDone(i) {
+  var r = state.rows[i], a = r && rowAmt(r), box = $('rpDone'); if (!r) { box.hidden = true; return; }
+  box.hidden = false; box.setAttribute('data-i', i);
+  box.innerHTML = '<div class="rdl">✓ <b>' + esc(r.p || '#' + (i + 1)) + '</b> · ' + esc(fmtQ(r.q)) + ' ' + esc(r.u || '') + ' × ₹' + esc(r.r) + perTxt(r.u) + (a !== null ? ' = <b>' + inr(a) + '</b>' : '') +
+    ' <button type="button" id="rpFix">✎ change</button></div><div class="rds">Bill so far: <b>' + inr(totals().gross) + '</b></div>';
+}
+function rateEntered(v, text) {
+  flushMove();
+  var i = state.cur, r = state.rows[i]; if (!r) return;
+  r.r = v; delete r.lr; if (r.f) delete r.f.r;
+  state.lastRated = i; state.touched = i;
+  refreshRow(i); calcTotal(); saveDraft();
+  var a = rowAmt(r), msg = '✓ ' + (r.p || '#' + (i + 1)) + ' ₹' + v + (a !== null ? ' = ' + inr(a) : '');
+  if (text !== 'typed') say(text, msg, 'ok'); else result(msg, 'ok');
+  $('rateIn').value = v; $('rpAmt').textContent = a !== null ? '✓ ₹' + v + perTxt(r.u) + ' = ' + inr(a) : '✓ ₹' + v;
+  $('ovRate').classList.add('took'); showRateDone(i);
+  var n = nextBlank(i, true);
+  laterMove(function () {
+    $('ovRate').classList.remove('took');
+    if (state.stage !== 'rates') return;
+    if (n < 0) { finishRates(); return; }
+    state.cur = n; announce();
+  });
+}
+document.addEventListener('click', function (e) {
+  if (!e.target || e.target.id !== 'rpFix') return;
+  var i = +$('rpDone').getAttribute('data-i');
+  if (state.moveT) { clearTimeout(state.moveT); state.moveT = null; state.moveFn = null; }
+  $('ovRate').classList.remove('took');
+  if (state.stage !== 'rates' || !state.rows[i]) return;
+  state.cur = i; announce(); $('rateIn').select && $('rateIn').select();
+});
+function finishRates() {
+  micStop(true); state.stage = 'items'; state.cur = -1; showOv('ovRate', false); render();
+  result('All rates entered. Total ' + inr(totals().net) + '.', 'ok');
+  openReview();
+}
+function stopRates(msg) {
+  if (state.moveT) { clearTimeout(state.moveT); state.moveT = null; state.moveFn = null; }
+  $('ovRate').classList.remove('took');
+  micStop(true); state.stage = 'items'; state.cur = -1; showOv('ovRate', false); render();
+  var rem = remaining();
+  result(msg || ('Rate entry paused — ' + rem + ' rate' + (rem === 1 ? '' : 's') + ' left. Tap “Enter Rates” to continue.'), rem ? 'warn' : 'ok');
+}
+function ratePrev() {
+  var pending = !!state.moveT;
+  if (pending) { clearTimeout(state.moveT); state.moveT = null; state.moveFn = null; $('ovRate').classList.remove('took'); announce(); return; }  // stay on the line just entered
+  if (state.cur > 0) { state.cur--; announce(); }
+}
+function rateSkip() {
+  flushMove(); if (state.stage !== 'rates') return;
+  var n = nextBlank(state.cur, true);
+  if (n < 0 || n === state.cur) { stopRates('No other item without a rate. ' + remaining() + ' left.'); return; }
+  state.cur = n; announce();
+}
+function rateVoice(text, c) {
+  var r = state.rows[state.cur];
+  if (c) {
+    if (c.cmd === 'stopRates') { say(text, 'Rate entry paused.', 'ok'); stopRates(); return; }
+    if (c.cmd === 'finish') { say(text, 'Opening review.', 'ok'); stopRates(); openReview(); return; }
+    if (c.cmd === 'skip') { say(text, 'Skipped ' + (r ? r.p : ''), 'warn'); rateSkip(); return; }
+    if (c.cmd === 'prev' || c.cmd === 'correct') { if (c.cmd === 'correct' && state.lastRated >= 0) state.cur = state.lastRated; else ratePrev(); announce(); say(text, '◀ ' + (state.rows[state.cur] || {}).p, 'ok'); return; }
+    if (c.cmd === 'repeat') { announce(); say(text, '↻ ' + (r ? r.p : ''), 'ok'); return; }
+    if (c.cmd === 'same') {
+      var lv = r && lastRateFor(r);
+      if (lv > 0) rateEntered(lv, text); else say(text, 'No saved rate for ' + (r ? r.p : 'this item') + ' — say the rate.', 'warn');
+      return;
+    }
+    if (c.cmd === 'change') { applyChange(text, c, c.field === 'r' ? (state.lastRated >= 0 ? state.lastRated : state.cur) : state.cur); return; }
+  }
+  var v = parseRate(text);
+  if (v === null) { say(text, '✕ Not a rate. Say only the number, e.g. “200”.', 'bad'); $('rpHeard').innerHTML = 'Heard “' + esc(text) + '” — <b style="color:var(--bad)">say only the number</b>'; return; }
+  rateEntered(v, text);
+}
+$('rateOk').onclick = function () {
+  var v = num($('rateIn').value);
+  if (!(v > 0)) { toast('Enter the rate'); $('rateIn').focus(); return; }
+  rateEntered(r2(v), 'typed');
+};
+$('rateIn').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('rateOk').click(); } });
+$('rateSame').onclick = function () { if (this._v) rateEntered(this._v, 'typed'); };
+$('rPrev').onclick = ratePrev;
+$('rSkip').onclick = rateSkip;
+$('rClose').onclick = function () { stopRates(); };
+$('rMic').onclick = function () { if (mic.want && mic.mode === 'rates') { micStop(); } else micStart('rates'); announce(); };
+
+$('preUse').onclick = function () {
+  showOv('ovPre', false);
+  (state.preKnown || []).forEach(function (i) { var r = state.rows[i], v = r && lastRateFor(r); if (v > 0 && blankRate(r)) { r.r = v; r.lr = true; if (r.f) delete r.f.r; } });
+  render();
+  result('✓ Last rates filled for ' + (state.preKnown || []).length + ' item(s).', 'ok');
+  if (nextBlank(-1, false) < 0) openReview(); else startRates(true);
+};
+$('preAll').onclick = function () { showOv('ovPre', false); startRates(true); };
+
+/* ======================================================= STAGE UI */
+function updateStageUI() {
+  var rates = state.stage === 'rates';
+  var listening = mic.want && mic.mode === 'items';
+  var mb = $('btnMic');
+  mb.classList.toggle('on', listening);
+  mb.querySelector('span').textContent = listening ? 'Stop' : (navigator.onLine ? 'Speak' : 'No voice');
+  mb.classList.toggle('offl', !navigator.onLine);
+  $('live').classList.toggle('on', !!mic.want && !rates);
+  var rem = remaining(), started = state.rows.some(function (r) { return num(r.r) > 0; });
+  $('btnRates').innerHTML = '<b>Rates ▶</b><small>' + (started && rem ? rem + ' left' : 'items done') + '</small>';
+  $('micParty').classList.toggle('on', mic.want && mic.mode === 'customer');
+  $('micMobile').classList.toggle('on', mic.want && mic.mode === 'mobile');
+  $('unMic').classList.toggle('on', mic.want && mic.mode === 'unit');
+  var rm = $('rMic');
+  if (SR && navigator.onLine) { rm.hidden = false; rm.textContent = mic.want && mic.mode === 'rates' ? '🎤 Voice on — tap to type instead' : '🎤 Tap to speak rates'; rm.classList.toggle('on', mic.want && mic.mode === 'rates'); } else rm.hidden = true;
+  fitDock();
+}
+$('btnMic').onclick = function () {
+  if (mic.want && mic.mode === 'items') { micStop(); result('Items stopped. ' + state.rows.length + ' item(s).', 'ok'); }
+  else if (micStart('items')) result('Listening for items…', '');
+};
+$('btnRates').onclick = function () { startRates(); };
+$('btnZoom').onclick = function () { state.zoom = (state.zoom + 1) % 3; ls.set('mt_zoom', state.zoom); applyZoom(); toast('Text size: ' + ['normal', 'large', 'extra large'][state.zoom]); };
+function applyZoom() { document.documentElement.style.zoom = [1, 1.15, 1.3][state.zoom] || 1; $('btnZoom').textContent = state.zoom === 2 ? 'A−' : 'A+'; if (isWide() !== state.wide) render(); fitDock(); }
+$('micParty').onclick = function () {
+  if (mic.want && mic.mode === 'customer') { micStop(); return; }
+  if (micStart('customer', true)) $('cHeard').textContent = 'Listening… say the name (and mobile if you like).';
+};
+$('micMobile').onclick = function () {
+  if (mic.want && mic.mode === 'mobile') { micStop(); return; }
+  if (micStart('mobile', true)) $('cHeard').textContent = 'Listening… say the 10-digit mobile number.';
+};
+function setSeg(id, attr, val) { Array.prototype.forEach.call($(id).children, function (b) { b.classList.toggle('sel', b.getAttribute(attr) === val); }); }
+$('langSeg').onclick = function (e) { var l = e.target.getAttribute('data-l'); if (!l) return; state.lang = l; ls.set('mt_lang', l); setSeg('langSeg', 'data-l', l); if (mic.want) micStart(mic.mode); };
+$('modeSeg').onclick = function (e) { var m = e.target.getAttribute('data-m'); if (!m) return; state.mode = m; setSeg('modeSeg', 'data-m', m); };
+setSeg('langSeg', 'data-l', state.lang); setSeg('modeSeg', 'data-m', state.mode);
+
+/* ================================================ REVIEW & SAVE */
+function reviewData() {
+  var errs = [], flags = [];
+  state.rows.forEach(function (r, i) {
+    if (Object.keys(rowErrors(r)).length) errs.push(i);
+    if (hasFlags(r)) flags.push(i);
+  });
+  return { errs: errs, flags: flags, t: totals() };
+}
+/* one card per item: summary with rate & amount, ✎ Edit opens all fields */
+function rvLine(r) {
+  var a = rowAmt(r), ld = lineDisc(r);
+  var q = blank(r.q) ? '<span class="miss">qty?</span>' : esc(fmtQ(r.q)) + ' ' + (esc(r.u) || '<span class="miss">unit?</span>');
+  var rt = num(r.r) > 0 ? '₹' + esc(r.r) + perTxt(r.u) + (r.lr ? ' <span class="lr">last rate</span>' : '') : '<span class="miss">rate?</span>';
+  return q + ' × ' + rt + (ld ? ' <span class="dsc">− ₹' + n2(ld) + ' disc</span>' : '') + (a !== null ? ' <b class="amt">= ' + inr(r2(a - ld)) + '</b>' : '');
+}
+function pmHtml(r) {
+  var e = rowErrors(r), f = r.f || {}, m = [];
+  Object.keys(e).forEach(function (k) { m.push('<span class="e">✕ ' + esc(e[k]) + '</span>'); });
+  Object.keys(f).forEach(function (k) { if (f[k] && !(k === 'u' && e.u)) m.push('<span class="w">⚠ ' + esc(f[k]) + '</span>'); });
+  return m.join(' · ');
+}
+function rvCard(r, i) {
+  var e = rowErrors(r), m = pmHtml(r), open = !!(state.rvOpen && state.rvOpen[i]) || Object.keys(e).length > 0;
+  var lr = lastRateFor(r);
+  var h = '<div class="pc ' + (Object.keys(e).length ? '' : hasFlags(r) ? 'fl' : 'ok') + '" data-i="' + i + '">' +
+    '<div class="pt"><b>' + (i + 1) + '. ' + esc(r.p || '(no name)') + '</b><button class="edt" data-redit="1">' + (open ? 'Done' : '✎ Edit') + '</button></div>' +
+    '<div class="pl" data-sum>' + rvLine(r) + '</div><div class="pm"' + (m ? '' : ' hidden') + '>' + m + '</div>';
+  if (r.amb && r.amb.length) h += '<div>' + r.amb.map(function (n) { return '<button class="chip" data-rpick="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '</div>';
+  if (open) {
+    h += '<div class="pf"><label>Item</label><input class="inp" type="text" data-rf="p" value="' + esc(r.p) + '" placeholder="Item name" autocomplete="off"></div>' +
+      '<div class="pf"><label>Qty</label><input class="inp" inputmode="decimal" data-rf="q" value="' + esc(r.q) + '" placeholder="Qty">' +
+      '<label>Unit</label><input class="inp" type="text" list="unitList" data-rf="u" value="' + esc(r.u) + '" placeholder="unit" autocomplete="off"></div>' +
+      (blank(r.u) ? '<div>' + QUICK_UNITS.map(function (u) { return '<button class="chip" data-rqu="' + esc(u) + '">' + esc(u) + '</button>'; }).join('') + '<button class="chip" data-rmore="1">Other…</button></div>' : '') +
+      '<div class="pf"><label>Rate ₹' + perTxt(r.u) + '</label><input class="inp" inputmode="decimal" enterkeyhint="next" data-rf="r" value="' + esc(r.r) + '" placeholder="' + (r.u ? 'per ' + rateBasis(r.u) : 'Rate') + '">' +
+      (lr > 0 && !(num(r.r) > 0) ? '<button class="chip g" data-rsame="' + lr + '">Last ₹' + lr + '</button>' : '') + '</div>' +
+      '<div class="pf"><label>Disc</label><input class="inp" inputmode="decimal" data-rf="d" value="' + esc(r.d || '') + '" placeholder="0">' +
+      '<button class="pct" data-rdp="1">' + (r.dp ? '%' : '₹') + '</button><span class="note" style="margin:0">tap ₹ / % to switch</span></div>';
+  }
+  if (hasFlags(r)) h += '<div class="pf"><button class="chip g" data-rok="1">✓ Confirm this item</button></div>';
+  return h + '</div>';
+}
+function openReview(keep) {
+  micStop(true); flushMove(); state.reviewed = true; state.open = -1;
+  if (state.stage === 'rates') { state.stage = 'items'; state.cur = -1; showOv('ovRate', false); }
+  if (!keep) state.rvOpen = {};
+  cleanMobileBox();
+  render();
+  var cust = $('party').value.trim() || 'Cash', mob = $('mobile').value.trim();
+  $('rvTitle').textContent = state.edit ? 'Review changes' : 'Review & Save';
+  $('rvGen').textContent = state.edit ? '✓ Save changes to ' + state.edit.memoNo : '✓ Confirm & Save Memo';
+  $('lessIn').value = String(state.less || '').replace('%', ''); $('lessMode').textContent = lessIsPct() ? '%' : '₹';
+  $('rvHead').innerHTML = '<div><span>Memo No.</span><b>' + esc(state.edit ? state.edit.memoNo + ' (editing)' : (peekNumber() || 'given on upload')) + '</b></div><div><span>Date</span><b>' + (state.edit ? esc(state.edit.date) : today()) + '</b></div>' +
+    '<div style="grid-column:1/-1"><span>Customer</span><b>' + esc(cust) + '</b>' + (mob ? ' · ' + esc(mob) : '') + '</div>';
+  var pend = [], done = [];
+  state.rows.forEach(function (r, i) { (Object.keys(rowErrors(r)).length || hasFlags(r) ? pend : done).push(i); });
+  var d = reviewData();
+  $('rvPend').innerHTML = pend.length ? '<div class="sec-t">Needs attention (' + pend.length + ')</div>' +
+    (d.flags.length && !d.errs.length ? '<button class="btn sec" id="rvConfirmTop" style="width:100%;margin-bottom:8px">✓ I have checked — confirm all ' + d.flags.length + ' ⚠ item(s)</button>' : '') +
+    pend.map(function (i) { return rvCard(state.rows[i], i); }).join('') : '';
+  $('rvDoneWrap').hidden = !done.length;
+  $('rvDone').innerHTML = done.map(function (i) { return rvCard(state.rows[i], i); }).join('');
+  $('rvWhy').textContent = '';
+  reviewStatus();
+  showOv('ovReview');
+  if (!keep) { var first = $('rvPend').querySelector('[data-rf=r]'); if (first && !('ontouchstart' in window)) first.focus(); }
+}
+function reviewStatus(keepWhy) {
+  var d = reviewData(), t = d.t;
+  $('rvCnts').innerHTML = '<span>' + state.rows.length + ' item' + (state.rows.length === 1 ? '' : 's') + '</span>' +
+    '<span class="' + (d.errs.length ? 'b' : 'g') + '">' + d.errs.length + ' pending</span>' +
+    '<span class="' + (d.flags.length ? 'w' : 'g') + '">' + d.flags.length + ' to confirm</span>';
+  var h = '<tr><td>Total</td><td>' + inr(t.gross) + '</td></tr>';
+  if (t.lineDisc) h += '<tr><td>Item discounts</td><td>−' + inr(t.lineDisc) + '</td></tr>';
+  if (t.billLess) h += '<tr><td>Bill discount</td><td>−' + inr(t.billLess) + '</td></tr>';
+  if (t.ro) h += '<tr><td>Round off</td><td>' + (t.ro > 0 ? '+' : '−') + inr(Math.abs(t.ro)) + '</td></tr>';
+  h += '<tr class="net"><td>Net amount</td><td>' + inr(t.net) + '</td></tr>';
+  if (t.less) h += '<tr><td colspan="2" style="font-size:12.5px;text-align:left;font-weight:400;color:var(--muted)">The memo shows one “Less / Discount” line of ' + inr(t.less) + '.</td></tr>';
+  if (t.unpriced) h += '<tr><td colspan="2" style="color:var(--warn);font-size:12.5px;text-align:left;font-weight:400">' + t.unpriced + ' item(s) not yet counted (qty/rate missing)</td></tr>';
+  $('rvTot').innerHTML = h;
+  $('lessNote').textContent = t.lessBad ? 'must be less than the total' : (t.billLess && lessIsPct() ? '= ' + inr(t.billLess) : '');
+  $('lessNote').style.color = t.lessBad ? 'var(--bad)' : '';
+  var blocked = !state.rows.length || d.errs.length || d.flags.length || t.lessBad;
+  $('rvGen').disabled = !!blocked;
+  if (!keepWhy) $('rvWhy').textContent = !state.rows.length ? 'No items in the bill.' : d.errs.length ? d.errs.length + ' item(s) still need details — fill the boxes above.' : d.flags.length ? 'Confirm ' + d.flags.length + ' item(s) marked ⚠.' : t.lessBad ? 'Discount must be less than the total.' : '';
+  $('rvConfirmAll').hidden = !d.flags.length || d.errs.length > 0;
+  $('rvConfirmAll').textContent = 'I have checked — confirm all ' + d.flags.length + ' ⚠ item(s)';
+}
+function pcState(card) {
+  var i = +card.getAttribute('data-i'), r = state.rows[i], e = rowErrors(r);
+  card.className = 'pc ' + (Object.keys(e).length ? '' : hasFlags(r) ? 'fl' : 'ok');
+  var sm = card.querySelector('[data-sum]'); if (sm) sm.innerHTML = rvLine(r);
+  var pm = card.querySelector('.pm'); if (pm) { var h = pmHtml(r); pm.innerHTML = h; pm.hidden = !h; }
+}
+var RV = document.querySelector('#ovReview .sheet');
+RV.addEventListener('input', function (e) {
+  var f = e.target.getAttribute('data-rf'); if (!f) return;
+  var card = e.target.closest('.pc'), i = +card.getAttribute('data-i'), r = state.rows[i];
+  r[f] = e.target.value; if (r.f) delete r.f[f];
+  if (f === 'd' && /%/.test(r.d)) { r.d = r.d.replace(/%/g, ''); r.dp = true; e.target.value = r.d; var tb = card.querySelector('[data-rdp]'); if (tb) tb.textContent = '%'; }
+  if (f === 'p') { var it = findItem(r.p); if (it && blank(r.u) && it.u) r.u = it.u; }
+  if (f === 'r') delete r.lr;
+  pcState(card); reviewStatus(); refreshRow(i); calcTotal(); saveDraft();
+});
+RV.addEventListener('change', function (e) {
+  var f = e.target.getAttribute('data-rf'); if (f !== 'p' && f !== 'u') return;
+  var card = e.target.closest('.pc'), i = +card.getAttribute('data-i'), r = state.rows[i];
+  if (f === 'p') { r.p = smartCase(e.target.value); e.target.value = r.p; card.querySelector('.pt b').textContent = (i + 1) + '. ' + (r.p || '(no name)'); saveDraft(); return; }
+  r.u = normUnit(e.target.value); e.target.value = r.u; pcState(card); reviewStatus(); refreshRow(i); saveDraft();
+});
+RV.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter' || !e.target.getAttribute('data-rf')) return;
+  e.preventDefault();
+  if (e.target.getAttribute('data-rf') === 'u') e.target.dispatchEvent(new Event('change', { bubbles: true }));
+  var all = Array.prototype.slice.call(RV.querySelectorAll('[data-rf]')), k = all.indexOf(e.target);
+  if (all[k + 1]) all[k + 1].focus(); else e.target.blur();
+});
+RV.addEventListener('click', function (e) {
+  var t = e.target;
+  if (t.id === 'rvConfirmTop') { state.rows.forEach(function (r) { r.f = {}; r.amb = null; }); render(); openReview(true); return; }
+  var card = t.closest('.pc'); if (!card) return;
+  var i = +card.getAttribute('data-i'), r = state.rows[i];
+  if (t.hasAttribute('data-redit')) { state.rvOpen = state.rvOpen || {}; state.rvOpen[i] = !state.rvOpen[i]; openReview(true); var c2 = RV.querySelector('.pc[data-i="' + i + '"]'); if (c2) { c2.scrollIntoView({ block: 'nearest' }); var inp = state.rvOpen[i] && c2.querySelector('[data-rf=q]'); if (inp) inp.focus(); } return; }
+  if (t.hasAttribute('data-rsame')) {
+    r.r = +t.getAttribute('data-rsame'); if (r.f) delete r.f.r;
+    var ri = card.querySelector('[data-rf=r]'); if (ri) ri.value = r.r;
+    t.remove(); pcState(card); reviewStatus(); refreshRow(i); calcTotal(); saveDraft();
+    return;
+  }
+  if (t.hasAttribute('data-rdp')) { r.dp = !r.dp; t.textContent = r.dp ? '%' : '₹'; pcState(card); reviewStatus(); refreshRow(i); calcTotal(); saveDraft(); return; }
+  if (t.hasAttribute('data-rqu')) { setUnit(i, t.getAttribute('data-rqu')); openReview(true); return; }
+  if (t.hasAttribute('data-rmore')) { openUnit({ type: 'review', i: i }); return; }
+  if (t.hasAttribute('data-rpick')) { var n = t.getAttribute('data-rpick'); r.p = n; r.amb = null; if (r.f) delete r.f.p; var it = findItem(n); if (it && blank(r.u) && it.u) r.u = it.u; render(); openReview(true); return; }
+  if (t.hasAttribute('data-rok')) { r.f = {}; r.amb = null; render(); openReview(true); return; }
+});
+function lessIsPct() { return !!state.lessPct || /%/.test(String(state.less || '')); }
+$('lessIn').addEventListener('input', function () {
+  var v = this.value.trim();
+  if (/%/.test(v)) { v = v.replace(/%/g, ''); state.lessPct = true; this.value = v; $('lessMode').textContent = '%'; }
+  state.less = v; saveDraft(); reviewStatus(); calcTotal();
+});
+/* ---------- v10: own number pad for discounts (has % and ₹ keys; the phone's number keypad has no %) ---------- */
+var TOUCH = window.matchMedia ? window.matchMedia('(pointer: coarse)').matches : ('ontouchstart' in window);
+function kpShow() {
+  var k = state.kp, v = k.v || '0', b = k.base();
+  $('kpTitle').textContent = k.title;
+  $('kpVal').innerHTML = k.pct ? esc(v) + ' <small>%</small>' : '<small>₹</small> ' + esc(v);
+  var amt = k.pct ? (b > 0 ? r2(b * num(v) / 100) : 0) : num(v) || 0;
+  $('kpNote').textContent = b > 0 ? (k.pct ? v + '% of ' + inr(b) + ' = ' + inr(amt) : 'on ' + inr(b)) + (amt >= b && amt > 0 ? ' — too much' : '') : '';
+  $('kpNote').style.color = amt >= b && amt > 0 ? 'var(--bad)' : '';
+  $('kpPct').classList.toggle('on', !!k.pct); $('kpRs').classList.toggle('on', !k.pct);
+}
+function openKpad(o) { state.kp = o; o.v = String(o.v || '').replace(/%/g, ''); if (o.v === '0') o.v = ''; kpShow(); showOv('ovKey'); }
+$('kpGrid').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-k]'), k = state.kp; if (!b || !k) return;
+  var key = b.getAttribute('data-k'), v = k.v || '';
+  if (key === 'ok') { showOv('ovKey', false); if (k.done) k.done(); return; }
+  if (key === 'bs') v = v.slice(0, -1);
+  else if (key === 'c') v = '';
+  else if (key === '%') k.pct = true;
+  else if (key === 'rs') k.pct = false;
+  else if (key === '.') { if (v.indexOf('.') < 0) v = (v || '0') + '.'; }
+  else if (/^\d$/.test(key)) { if (/\.\d\d$/.test(v) || v.replace('.', '').length >= 7) return; v = v === '0' ? key : v + key; }
+  k.v = v; k.apply(v, !!k.pct); kpShow();
+});
+function kpForRow(i, onChange) {
+  var r = state.rows[i]; if (!r) return;
+  openKpad({ title: 'Discount — ' + (r.p || 'item ' + (i + 1)), v: r.d, pct: !!r.dp, base: function () { return rowAmt(state.rows[i]) || 0; },
+    apply: function (v, pct) { r.d = v; r.dp = pct; if (r.f) delete r.f.d; onChange(); } });
+}
+function kpForBill() {
+  openKpad({ title: 'Bill discount', v: state.less, pct: lessIsPct(), base: function () { var t = totals(); return r2(t.gross - t.lineDisc); },
+    apply: function (v, pct) { state.less = v; state.lessPct = pct; $('lessIn').value = v; $('lessMode').textContent = pct ? '%' : '₹'; saveDraft(); reviewStatus(); calcTotal(); } });
+}
+function kpPrep(root) {   // on phones, discount boxes open the number pad instead of the keyboard
+  if (!TOUCH) return;
+  Array.prototype.forEach.call((root || document).querySelectorAll('[data-rf=d],[data-f=d],#lessIn'), function (el) { el.readOnly = true; el.setAttribute('inputmode', 'none'); });
+}
+$('lessIn').addEventListener('click', function () { if (TOUCH) kpForBill(); });
+RV.addEventListener('click', function (e) {
+  if (!TOUCH || e.target.getAttribute('data-rf') !== 'd') return;
+  var card = e.target.closest('.pc'), i = +card.getAttribute('data-i'), inp = e.target;
+  kpForRow(i, function () { var r = state.rows[i]; inp.value = r.d; var tb = card.querySelector('[data-rdp]'); if (tb) tb.textContent = r.dp ? '%' : '₹'; pcState(card); reviewStatus(); refreshRow(i); calcTotal(); saveDraft(); });
+});
+$('list').addEventListener('click', function (e) {
+  if (!TOUCH || e.target.getAttribute('data-f') !== 'd') return;
+  var i = rowIndexOf(e.target);
+  kpForRow(i, function () { var r = state.rows[i], box = rowBox(i); if (!box) return; var inp = box.querySelector('[data-f=d]'); if (inp) inp.value = r.d; var tb = box.querySelector('[data-act=dp]'); if (tb) tb.textContent = r.dp ? '%' : '₹'; refreshRow(i); calcTotal(); saveDraft(); });
+});
+new MutationObserver(function () { if (state.kpT) return; state.kpT = requestAnimationFrame(function () { state.kpT = 0; kpPrep(); }); }).observe(document.body, { childList: true, subtree: true });
+kpPrep();
+$('lessMode').onclick = function () { state.lessPct = !lessIsPct(); state.less = String(state.less || '').replace('%', ''); this.textContent = state.lessPct ? '%' : '₹'; saveDraft(); reviewStatus(); calcTotal(); };
+$('rvConfirmAll').onclick = function () { state.rows.forEach(function (r) { r.f = {}; r.amb = null; }); render(); openReview(true); };
+$('btnReview').onclick = function () { openReview(); };
+
+$('rvGen').onclick = function () {
+  var d = reviewData();
+  if (!state.rows.length || d.errs.length || d.flags.length) { openReview(true); return; }
+  if (!cfg.url) { showOv('ovReview', false); openSetup(); return; }
+  cleanMobileBox();
+  var party = $('party').value.trim(), mobRaw = $('mobile').value.trim(), mobile = normMobile(mobRaw);
+  if (mobRaw && !mobile) { $('rvWhy').textContent = 'Mobile number must be 10 digits (or leave it blank).'; return; }
+  var lines = state.rows.map(function (r) {
+    var p = String(r.p).trim(), l = { p: p, q: num(r.q), u: r.u, r: num(r.r) }, ld = lineDisc(r);
+    if (ld > 0) l.d = ld;
+    if (r.h && r.h !== nameKey(p)) l.h = r.h;
+    return l;
+  });
+  saveDraft();                          // the bill stays on the phone until it is safely stored
+  var editing = state.edit, t0 = totals();
+  var req = { party: party, mobile: mobile, lines: lines, less: t0.billLess || 0 };   // bill discount only; item discounts travel on each line
+  if (!editing) { saveLocal(req); return; }
+  if (!navigator.onLine) { $('rvWhy').textContent = 'Editing a saved memo needs internet. Your changes are kept — save again when online.'; return; }
+  busy(true); $('rvGen').disabled = true;
+  var call = api('edit', Object.assign({ memoNo: editing.memoNo, txn: editing.txn }, req));
+  call.then(function (m) {
+    state.lastMemo = m; state.lastPdf = null;
+    recentPut(m); bookCacheClear();
+    learnFromMemo(editing ? [] : lines, party, mobile);
+    if (editing) lines.forEach(function (l) { var it = findItem(l.p); if (it) { it.r = l.r; it.u = l.u; } });
+    showOv('ovReview', false);
+    $('doneTitle').textContent = editing ? '✓ Memo updated' : '✓ Memo saved';
+    $('doneInfo').innerHTML = '<p style="margin:0 0 4px;font-size:16px"><b>' + esc(m.memoNo) + '</b> · ' + esc(m.date) + (m.time ? ' · ' + esc(m.time) : '') + '</p>' +
+      '<p style="margin:0 0 4px">' + esc(m.party) + (m.mobile ? ' · ' + esc(m.mobile) : '') + ' · ' + m.lines.length + ' item(s)</p><p style="margin:0;font-size:19px">Net amount: <b>' + inr(m.total) + '</b></p>' +
+      (m.repeated ? '<p class="note">This bill had already been saved — no duplicate was created.</p>' : '') +
+      (m.warnings && m.warnings.length ? '<p class="note">Note: ' + esc(m.warnings.join(', ')) + ' (memo is saved).</p>' : '');
+    $('dWa').textContent = '💬 WhatsApp message' + (m.mobile ? ' to ' + m.mobile : '');
+    state.lastTxn = null; $('doneSync').textContent = '☁ Changes saved in the Google Sheet.';
+    showOv('ovDone');
+    if (m.nextMemoNo) { state.nextNo = m.nextMemoNo; }
+    if (editing) endEdit(); else resetBill();
+    renderFavs(); fillUnitList();
+  }).catch(function (e) {
+    if (e.code === 'PIN') { showOv('ovReview', false); openSetup('Wrong PIN'); return; }
+    $('rvWhy').textContent = e.code === 'NET'
+      ? 'Could not confirm the save (connection problem). Your bill is kept — tap “Confirm & Save” again; it will never be saved twice.'
+      : 'Not saved: ' + e.message + ' Your bill is kept — correct it and save again.';
+    toast('Memo not saved — bill kept on this phone', 5000);
+  }).then(function () { busy(false); reviewStatus(true); });
+};
+
+/* ================================================== v8: SAVE ON PHONE, UPLOAD IN BACKGROUND */
+function pad2(n) { return ('0' + n).slice(-2); }
+function localMemo(req, memoNo, at) {
+  var lines = req.lines.map(function (l) { return { p: l.p, q: l.q, u: l.u, r: r2(l.r), a: lineAmount(l.q, l.u, r2(l.r)), d: r2(l.d || 0) }; });
+  var g = r2(lines.reduce(function (t, l) { return t + l.a; }, 0)), ld = r2(lines.reduce(function (t, l) { return t + l.d; }, 0));
+  var less = r2(ld + (req.less || 0)), after = r2(g - less);
+  var tot = state.roundOff ? Math.round(after) : after, d = new Date(at), h = d.getHours();
+  return { memoNo: memoNo, date: pad2(d.getDate()) + '-' + pad2(d.getMonth() + 1) + '-' + d.getFullYear(), time: pad2(h % 12 || 12) + ':' + pad2(d.getMinutes()) + ' ' + (h < 12 ? 'AM' : 'PM'),
+    party: req.party || 'Cash', mobile: req.mobile, lines: lines, gross: g, less: less, ro: r2(tot - after), total: tot,
+    shop: $('shopName').textContent, place: $('shopPlace').textContent };
+}
+function curFY() { var d = new Date(), y = d.getFullYear(), s = d.getMonth() >= 3 ? y : y - 1; return String(s).slice(2) + '-' + String(s + 1).slice(2); }
+function fmtNo(b, n) { return b.prefix + '/' + b.fy + '/' + ('000' + n).slice(-4); }
+function blocksOk() { var fy = curFY(); return ls.get('mt_blocks', []).filter(function (b) { return b.fy === fy && b.next <= b.to; }); }
+function numbersLeft() { return blocksOk().reduce(function (t, b) { return t + b.to - b.next + 1; }, 0); }
+function peekNumber() { var b = blocksOk()[0]; return b ? fmtNo(b, b.next) : ''; }
+function takeNumber() {
+  var all = ls.get('mt_blocks', []), fy = curFY();
+  for (var i = 0; i < all.length; i++) { var b = all[i]; if (b.fy === fy && b.next <= b.to) { var no = fmtNo(b, b.next); b.next++; ls.set('mt_blocks', all); return no; } }
+  return '';
+}
+function showNextNo() { $('nextNo').textContent = state.edit ? '✎ ' + state.edit.memoNo : (peekNumber() || (navigator.onLine ? (state.nextNo || '—') : 'Provisional')); }
+function ensureBlocks() {
+  if (!cfg.url || !navigator.onLine || state.reserving || numbersLeft() >= 10) return;
+  state.reserving = true;
+  api('reserve', { device: DEV, name: ls.get('mt_phone', ''), count: 30 }).then(function (j) {
+    var all = blocksOk(); all.push({ id: j.block.id, fy: j.block.fy, prefix: j.block.prefix, from: j.block.from, to: j.block.to, next: j.block.from });
+    ls.set('mt_blocks', all); showNextNo();
+  }).catch(function () {}).then(function () { state.reserving = false; });
+}
+function saveLocal(req) {
+  var at = Date.now(), no = takeNumber(), prov = '';
+  if (!no) { var ps = (ls.get('mt_prov', 0) || 0) + 1; ls.set('mt_prov', ps); prov = 'P-' + ps; }
+  var m = localMemo(req, no || prov, at); m.provisional = !no;
+  var entry = { txn: state.txn, memoNo: no, prov: prov, at: at, party: req.party, mobile: req.mobile, less: req.less, lines: req.lines, memo: m, status: 'waiting' };
+  var q = qGet(); q.push(entry);
+  if (!qPut(q)) {                                   // phone storage full: fall back to a direct upload
+    if (!navigator.onLine) { $('rvWhy').textContent = 'Phone storage is full and there is no internet — memo NOT saved. Free some space and try again.'; return; }
+    toast('Phone storage full — uploading directly', 3000);
+  }
+  learnFromMemo(req.lines, req.party, req.mobile);
+  state.lastMemo = m; state.lastPdf = null; state.lastTxn = entry.txn;
+  showOv('ovReview', false);
+  $('doneTitle').textContent = '✓ Memo saved';
+  $('doneInfo').innerHTML = '<p style="margin:0 0 4px;font-size:16px"><b>' + esc(m.memoNo) + '</b> · ' + esc(m.date) + ' · ' + esc(m.time) + '</p>' +
+    '<p style="margin:0 0 4px">' + esc(m.party) + (m.mobile ? ' · ' + esc(m.mobile) : '') + ' · ' + m.lines.length + ' item(s)</p><p style="margin:0;font-size:19px">Net amount: <b>' + inr(m.total) + '</b></p>' +
+    (prov ? '<p class="note" style="color:var(--warn)">No reserved numbers were left on this phone, so this is a <b>provisional</b> number. The final memo number is given when it uploads — reprint the memo then.</p>' : '');
+  $('dWa').textContent = '💬 WhatsApp message' + (m.mobile ? ' to ' + m.mobile : '');
+  showOv('ovDone'); resetBill(); renderFavs(); fillUnitList(); showNextNo();
+  updateDoneSync(); syncQueue(); ensureBlocks();
+}
+function updateDoneSync() {
+  var el = $('doneSync'); if (!state.lastTxn) return;
+  var e = qGet().filter(function (x) { return x.txn === state.lastTxn; })[0];
+  if (!e) { el.textContent = '☁ Uploaded to Google Sheet.'; el.style.color = 'var(--ok)'; return; }
+  el.style.color = e.status === 'error' ? 'var(--bad)' : 'var(--warn)';
+  el.textContent = e.status === 'error' ? '⚠ Upload problem: ' + e.error + ' (see Uploads)' : navigator.onLine ? '⏳ Saved on this phone — uploading…' : '⏳ Saved on this phone — will upload automatically when internet is back.';
+}
+function syncQueue() {
+  if (state.syncing || !cfg.url) { updateNet(); return; }
+  var q = qGet(), next = q.filter(function (e) { return e.status !== 'error'; })[0];
+  if (!next || !navigator.onLine) { updateNet(); return; }
+  state.syncing = true; updateNet();
+  api('save', { txn: next.txn, memoNo: next.memoNo || undefined, device: DEV, at: next.at, party: next.party, mobile: next.mobile, less: next.less, lines: next.lines }).then(function (res) {
+    qPut(qGet().filter(function (e) { return e.txn !== next.txn; }));
+    if (res && res.memoNo && res.lines) recentPut(res);
+    if (next.prov && res.memoNo) {
+      if (state.lastMemo && state.lastMemo.memoNo === next.prov) { state.lastMemo.memoNo = res.memoNo; state.lastMemo.provisional = false; state.lastPdf = null; }
+      toast('Provisional ' + next.prov + ' is now ' + res.memoNo + ' — reprint the memo if it was given out.', 8000);
+    }
+    state.syncing = false; updateNet(); updateDoneSync(); syncQueue();
+    if (state.tab === 'Book' && !qGet().some(function (e) { return e.status !== 'error'; })) loadBook();
+  }).catch(function (e) {
+    state.syncing = false;
+    if (e.code !== 'NET' && e.code !== 'PIN') {
+      var q2 = qGet(); q2.forEach(function (x) { if (x.txn === next.txn) { x.status = 'error'; x.error = e.message; } }); qPut(q2);
+      updateNet(); updateDoneSync(); syncQueue(); return;
+    }
+    updateNet(); updateDoneSync();
+  });
+}
+function updateNet() {
+  var q = qGet(), wait = q.filter(function (e) { return e.status !== 'error'; }).length, err = q.length - wait, on = navigator.onLine, p = $('netPill');
+  p.className = 'npill' + (err ? ' err' : !on ? ' off' : wait ? ' wait' : '');
+  p.textContent = err ? '⚠ ' + err + ' not uploaded' : !on ? '● offline' + (wait ? ' · ' + wait + ' waiting' : '') : wait ? (state.syncing ? '☁ uploading ' + wait : '⏳ ' + wait + ' to upload') : '● online';
+  showNextNo(); updateStageUI();
+  if ($('ovQueue').classList.contains('show')) renderQueue();
+}
+function renderQueue() {
+  var q = qGet(), left = numbersLeft(), b = blocksOk()[0];
+  $('qInfo').innerHTML = q.length ? '<b>' + q.length + '</b> memo(s) saved on this phone are not yet in the Google Sheet. They upload automatically when there is internet.' : '✓ Everything is uploaded.';
+  $('qList').innerHTML = q.map(function (e) {
+    var m = e.memo || {};
+    return '<div class="qitem' + (e.status === 'error' ? ' err' : '') + '" data-q="' + esc(e.txn) + '"><div class="qt"><b>' + esc(m.memoNo || e.memoNo || e.prov) + ' · ' + esc(m.party || 'Cash') + '</b><b>' + inr(m.total) + '</b></div>' +
+      '<div class="qs">' + esc(m.date) + ' ' + esc(m.time) + ' · ' + (m.lines || []).length + ' item(s) · ' + (e.status === 'error' ? '⚠ ' + esc(e.error) : navigator.onLine ? 'waiting to upload' : 'offline — waiting') + '</div>' +
+      '<div class="qa"><button class="lnk" data-qpdf="1">Share PDF</button>' + (e.status === 'error' ? '<button class="lnk" data-qretry="1">Try again</button><button class="lnk" data-qdel="1" style="color:var(--bad)">Remove</button>' : '') + '</div></div>';
+  }).join('');
+  $('qNums').innerHTML = 'Memo numbers reserved on this phone: <b>' + left + '</b>' + (b ? ' (next ' + esc(fmtNo(b, b.next)) + ')' : '') + '. More are reserved automatically when online.';
+  $('qRetry').hidden = !q.length;
+}
+$('netPill').onclick = function () { renderQueue(); showOv('ovQueue'); };
+$('btnUploads').onclick = function () { showOv('ovSetup', false); renderQueue(); showOv('ovQueue'); };
+$('qRetry').onclick = function () { var q = qGet(); q.forEach(function (e) { if (e.status === 'error') { e.status = 'waiting'; delete e.error; } }); qPut(q); if (!navigator.onLine) toast('No internet right now — will upload automatically.'); syncQueue(); renderQueue(); };
+$('qList').addEventListener('click', function (ev) {
+  var box = ev.target.closest('[data-q]'); if (!box) return;
+  var txn = box.getAttribute('data-q'), q = qGet(), e = q.filter(function (x) { return x.txn === txn; })[0]; if (!e) return;
+  if (ev.target.hasAttribute('data-qpdf')) { state.lastPdf = null; withPdf(function () { return memoPdf(e.memo); }, sharePdf); return; }
+  if (ev.target.hasAttribute('data-qretry')) { e.status = 'waiting'; delete e.error; qPut(q); syncQueue(); renderQueue(); return; }
+  if (ev.target.hasAttribute('data-qdel')) {
+    if (!confirm('Remove memo ' + (e.memoNo || e.prov) + ' from this phone WITHOUT uploading it? It will be lost from the records.')) return;
+    qPut(q.filter(function (x) { return x.txn !== txn; })); updateNet(); renderQueue();
+  }
+});
+$('phoneName').addEventListener('change', function () { ls.set('mt_phone', this.value.trim()); });
+$('btnRelease').onclick = function () {
+  if (qGet().length) { toast('Upload all memos first (see Uploads).', 4000); return; }
+  if (!navigator.onLine) { toast('Needs internet.'); return; }
+  if (!confirm('Release the ' + numbersLeft() + ' unused memo numbers of this phone? New numbers will be reserved automatically next time.')) return;
+  busy(true);
+  api('release', { device: DEV }).then(function () { ls.set('mt_blocks', []); toast('Unused numbers released and recorded in the Number Blocks sheet.', 4000); showNextNo(); $('numInfo').textContent = 'Reserved numbers on this phone: 0'; })
+    .catch(function (e) { toast(e.message, 4000); }).then(function () { busy(false); });
+};
+window.addEventListener('online', function () { updateNet(); syncQueue(); syncItems(); ensureBlocks(); if (!state.items.length) loadInit(true); });
+window.addEventListener('offline', function () { if (mic.want) micStop(); updateNet(); });
+setInterval(function () { if (qGet().length) syncQueue(); if (iqGet().length) syncItems(); }, 30000);
+
+/* ================================================== PDF (made on the phone, A6) */
+function pdfReady() { return !!(window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.autoTable); }
+function wordsINR(amount) {
+  var a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  var b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  function two(x) { return x < 20 ? a[x] : b[Math.floor(x / 10)] + (x % 10 ? ' ' + a[x % 10] : ''); }
+  function three(x) { var h = Math.floor(x / 100), r = x % 100; return (h ? a[h] + ' Hundred' + (r ? ' ' : '') : '') + (r ? two(r) : ''); }
+  function conv(x) {
+    if (x === 0) return 'Zero';
+    var s = '', cr = Math.floor(x / 1e7); x %= 1e7; var lk = Math.floor(x / 1e5); x %= 1e5; var th = Math.floor(x / 1e3); x %= 1e3;
+    if (cr) s += conv(cr) + ' Crore '; if (lk) s += two(lk) + ' Lakh '; if (th) s += two(th) + ' Thousand '; if (x) s += three(x);
+    return s.trim();
+  }
+  var p = Math.round(r2(amount) * 100), rs = Math.floor(p / 100), ps = p % 100;
+  return 'Rupees ' + conv(rs) + (ps ? ' and ' + two(ps) + ' Paise' : '') + ' Only';
+}
+function pdfSafe(s) { return String(s == null ? '' : s).replace(/₹/g, 'Rs.').replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '?'); }
+function pdfName(m) { return String(m.memoNo).replace(/\//g, '-') + '_' + String(m.party || 'Cash').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '_') + (m.cancelled ? '_CANCELLED' : '') + '.pdf'; }
+function makeMemoPdf(m) {
+  var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a6', orientation: 'portrait' });
+  var W = 105, H = 148, M = 6, shop = pdfSafe(m.shop || $('shopName').textContent), place = pdfSafe(m.place || $('shopPlace').textContent);
+  function frame() { doc.setDrawColor(0); doc.setLineWidth(0.3); doc.rect(3, 3, W - 6, H - 6); }
+  function contHead() {
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text(shop, W / 2, 9, { align: 'center' });
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text('Cash Memo ' + pdfSafe(m.memoNo) + '  |  ' + pdfSafe(m.date) + '  (continued)', W / 2, 13, { align: 'center' });
+  }
+  frame();
+  var y = 11;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.text(shop, W / 2, y, { align: 'center' });
+  y += 4.5; doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.text(place, W / 2, y, { align: 'center' });
+  y += 5.5; doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
+  var tw = doc.getTextWidth('CASH MEMO') + 8; doc.setLineWidth(0.3); doc.rect(W / 2 - tw / 2, y - 3.4, tw, 4.8); doc.text('CASH MEMO', W / 2, y, { align: 'center' });
+  if (m.cancelled) {
+    y += 7.5; doc.setTextColor(200, 0, 0); doc.setDrawColor(200, 0, 0); doc.setFontSize(13); doc.setLineWidth(0.6);
+    var cw = doc.getTextWidth('CANCELLED') + 8; doc.rect(W / 2 - cw / 2, y - 4.8, cw, 6.4); doc.text('CANCELLED', W / 2, y, { align: 'center' });
+    if (m.reason) { y += 4; doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.text('Reason: ' + pdfSafe(m.reason), W / 2, y, { align: 'center' }); }
+    doc.setTextColor(0); doc.setDrawColor(0); doc.setLineWidth(0.3);
+  }
+  y += 6.5; doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold'); doc.text('Memo No.:', M, y); doc.setFont('helvetica', 'normal'); doc.text(pdfSafe(m.memoNo), M + 14.5, y);
+  doc.text(pdfSafe(m.date), W - M, y, { align: 'right' }); doc.setFont('helvetica', 'bold'); doc.text('Date:', W - M - doc.getTextWidth(pdfSafe(m.date)) - 1.5, y, { align: 'right' });
+  y += 4.5; doc.text('Party Name:', M, y); doc.setFont('helvetica', 'normal');
+  doc.text(doc.splitTextToSize(pdfSafe(m.party || 'Cash'), W - 2 * M - 17)[0], M + 17, y);
+  y += 2.5;
+  var body = m.lines.map(function (l, i) { return [String(i + 1), pdfSafe(l.p), fmtQ(l.q), pdfSafe(l.u || ''), PER_BASE[l.u] ? (l.r % 1 ? n2(l.r) : String(l.r)) + '/' + PER_BASE[l.u].replace('Litre', 'Ltr') : n2(l.r), n2(l.a !== undefined ? l.a : lineAmount(l.q, l.u, l.r))]; });
+  doc.autoTable({
+    startY: y, head: [['Sl', 'Particulars', 'Qty', 'Unit', 'Rate', 'Amount']], body: body, theme: 'grid',
+    margin: { left: M, right: M, top: 16, bottom: 11 }, showHead: 'everyPage',
+    styles: { font: 'helvetica', fontSize: 7.2, cellPadding: 1, lineColor: 0, lineWidth: 0.15, textColor: 0, valign: 'middle', overflow: 'linebreak' },
+    headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: 'bold', halign: 'center' },
+    columnStyles: { 0: { halign: 'center', cellWidth: 6.5 }, 2: { halign: 'right', cellWidth: 10 }, 3: { halign: 'center', cellWidth: 10.5 }, 4: { halign: 'right', cellWidth: 13 }, 5: { halign: 'right', cellWidth: 15.5 } },
+    didDrawPage: function (d) { if (d.pageNumber > 1) { frame(); contHead(); } }
+  });
+  y = doc.lastAutoTable.finalY;
+  var words = wordsINR(m.total); doc.setFontSize(7); var wl = doc.splitTextToSize(words, W - 2 * M);
+  var extra = (m.less ? 1 : 0) + (m.ro ? 1 : 0);
+  var need = (extra ? extra + 2 : 1) * 4.4 + 5 + wl.length * 3.2 + 18;
+  if (y + need > H - 9) { doc.addPage(); frame(); contHead(); y = 18; }
+  var lx = W / 2 - 4, vx = W - M;
+  function trow(lbl, val, bold, size) { y += 4.4; doc.setFontSize(size || 7.5); doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.text(lbl, lx, y); doc.text(val, vx, y, { align: 'right' }); }
+  if (extra) {
+    trow('Total', n2(m.gross));
+    if (m.less) trow('Less / Discount', '-' + n2(m.less));
+    if (m.ro) trow('Round Off', (m.ro > 0 ? '+' : '') + n2(m.ro));
+    doc.setLineWidth(0.3); doc.line(lx, y + 1.3, vx, y + 1.3); y += 0.6; trow('Net Amount', 'Rs. ' + n2(m.total), true, 9);
+  } else trow('Total', 'Rs. ' + n2(m.total), true, 9);
+  y += 4.6; doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.text(wl, M, y); y += (wl.length - 1) * 3.2;
+  y += 5; doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.text('E. & O.E.', M, y);
+  doc.setFontSize(7.5); doc.text('For ' + shop, W - M, y, { align: 'right' });
+  y += 10; doc.setFontSize(7); doc.text('Authorised Signatory', W - M, y, { align: 'right' });
+  var n = doc.getNumberOfPages();
+  for (var p = 1; p <= n; p++) {
+    doc.setPage(p);
+    if (n > 1) { doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(90); doc.text('Page ' + p + ' of ' + n, W / 2, H - 5, { align: 'center' }); doc.setTextColor(0); }
+    if (m.cancelled) {
+      doc.saveGraphicsState(); doc.setGState(new doc.GState({ opacity: 0.13 }));
+      doc.setTextColor(200, 0, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(38);
+      doc.text('CANCELLED', 21, 106, { angle: 38 });
+      doc.restoreGraphicsState(); doc.setTextColor(0);
+    }
+  }
+  return { blob: doc.output('blob'), fileName: pdfName(m) };
+}
+function makeBookPdf(d, partyFilter) {
+  var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' }), W = 210, M = 12;
+  var shop = pdfSafe(d.shop || $('shopName').textContent), place = pdfSafe(d.place || $('shopPlace').textContent);
+  function dmy(x) { return x.split('-').reverse().join('-'); }
+  var period = d.from === d.to ? dmy(d.from) : dmy(d.from) + ' to ' + dmy(d.to);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.text(shop, W / 2, 16, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text(place, W / 2, 21.5, { align: 'center' });
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('DAY BOOK  -  ' + period + (partyFilter ? '  -  Customer: ' + pdfSafe(partyFilter) : ''), W / 2, 29, { align: 'center' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+  doc.text('Memos: ' + d.count + (d.cancelled ? ' (+' + d.cancelled + ' cancelled)' : '') + '     Total: Rs. ' + n2(d.total), M, 37);
+  var common = { theme: 'grid', margin: { left: M, right: M, bottom: 14 }, styles: { fontSize: 8.5, cellPadding: 1.6, lineColor: 120, lineWidth: 0.1, textColor: 0 }, headStyles: { fillColor: [31, 58, 95], textColor: 255 }, footStyles: { fillColor: [235, 235, 235], textColor: 0, fontStyle: 'bold' } };
+  doc.autoTable(Object.assign({}, common, {
+    startY: 40, head: [['Sl', 'Memo No.', 'Date', 'Time', 'Party Name', 'Items', 'Amount']],
+    body: d.memos.map(function (m, i) { return [i + 1, pdfSafe(m.no), m.date, m.time || '', pdfSafe(m.party) + (m.cancelled ? '  (CANCELLED' + (m.reason ? ': ' + pdfSafe(m.reason) : '') + ')' : ''), m.n, m.cancelled ? '(' + n2(m.total) + ')' : n2(m.total)]; }),
+    foot: [['', '', '', '', 'Total (excluding cancelled)', '', n2(d.total)]],
+    columnStyles: { 0: { halign: 'center', cellWidth: 10 }, 5: { halign: 'center', cellWidth: 14 }, 6: { halign: 'right', cellWidth: 28 } },
+    didParseCell: function (h) { if (h.section === 'body' && d.memos[h.row.index] && d.memos[h.row.index].cancelled) h.cell.styles.textColor = [180, 0, 0]; if (h.section === 'foot' && h.column.index === 6) h.cell.styles.halign = 'right'; }
+  }));
+  var y = doc.lastAutoTable.finalY + 8;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('Customer-wise', M, y);
+  doc.autoTable(Object.assign({}, common, { startY: y + 2, head: [['Party Name', 'Memos', 'Amount']], body: d.parties.map(function (p) { return [pdfSafe(p.party), p.count, n2(p.total)]; }), columnStyles: { 1: { halign: 'center', cellWidth: 20 }, 2: { halign: 'right', cellWidth: 32 } } }));
+  y = doc.lastAutoTable.finalY + 8;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.text('Item-wise', M, y);
+  doc.autoTable(Object.assign({}, common, { startY: y + 2, head: [['Particulars', 'Qty', 'Unit', 'Amount']], body: d.items.map(function (it) { return [pdfSafe(it.p), fmtQ(it.q), pdfSafe(it.u), n2(it.a)]; }), columnStyles: { 1: { halign: 'right', cellWidth: 22 }, 2: { halign: 'center', cellWidth: 22 }, 3: { halign: 'right', cellWidth: 32 } } }));
+  var n = doc.getNumberOfPages();
+  for (var p = 1; p <= n; p++) { doc.setPage(p); doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(100); doc.text('Page ' + p + ' of ' + n + '   ·   Item-wise amounts are before round-off', W / 2, 290, { align: 'center' }); doc.setTextColor(0); }
+  return { blob: doc.output('blob'), fileName: 'DayBook_' + d.from + (d.to !== d.from ? '_to_' + d.to : '') + '.pdf' };
+}
+function withPdf(make, then) {
+  if (!pdfReady()) { toast('PDF tool not loaded yet — check internet and try again in a moment. The memo itself is saved.', 5000); return; }
+  try { then(make()); } catch (e) { toast('Could not create PDF: ' + e.message, 5000); }
+}
+function downloadPdf(p) {
+  var url = URL.createObjectURL(p.blob), a = document.createElement('a');
+  a.href = url; a.download = p.fileName; document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 4000);
+}
+function sharePdf(p) {
+  var file = new File([p.blob], p.fileName, { type: 'application/pdf' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: p.fileName }).catch(function (e) { if (e.name !== 'AbortError') downloadPdf(p); });
+  } else { toast('Sharing not supported here — downloading instead.'); downloadPdf(p); }
+}
+function openPdf(p) { var url = URL.createObjectURL(p.blob); var w = window.open(url, '_blank'); if (!w) downloadPdf(p); setTimeout(function () { URL.revokeObjectURL(url); }, 60000); }
+function memoPdf(m) { if (!state.lastPdf || state.lastPdf.memoNo !== m.memoNo) { var p = makeMemoPdf(m); p.memoNo = m.memoNo; state.lastPdf = p; } return state.lastPdf; }
+$('dShare').onclick = function () { var m = state.lastMemo; if (m) withPdf(function () { return memoPdf(m); }, sharePdf); };
+$('dDown').onclick = function () { var m = state.lastMemo; if (m) withPdf(function () { return memoPdf(m); }, downloadPdf); };
+$('dOpen').onclick = function () { var m = state.lastMemo; if (m) withPdf(function () { return memoPdf(m); }, openPdf); };
+$('dWa').onclick = function () { if (state.lastMemo) openWa(state.lastMemo); };
+$('dNew').onclick = function () { showOv('ovDone', false); window.scrollTo(0, 0); };
+
+/* ============================================================ WHATSAPP (no links) */
+function waText(m) {
+  var t = '*' + $('shopName').textContent + '*, ' + $('shopPlace').textContent + '\n' +
+    'Cash Memo *' + m.memoNo + '* · ' + m.date + '\n' + 'Customer: ' + m.party + '\n\n';
+  if (m.lines.length <= 25) t += m.lines.map(function (l, i) { return (i + 1) + '. ' + l.p + ' — ' + fmtQ(l.q) + ' ' + l.u + ' × ₹' + l.r + perTxt(l.u) + ' = ' + inr(l.a !== undefined ? l.a : lineAmount(l.q, l.u, l.r)); }).join('\n') + '\n\n';
+  else t += m.lines.length + ' items\n\n';
+  if (m.less || m.ro) t += 'Total ' + inr(m.gross) + (m.less ? ', Less ' + inr(m.less) : '') + (m.ro ? ', Round off ' + (m.ro > 0 ? '+' : '−') + inr(Math.abs(m.ro)) : '') + '\n';
+  return t + '*Net Amount: ' + inr(m.total) + '*\n\nThank you!';
+}
+function waUpdate() {
+  var m = state.waMemo; if (!m) return;
+  var raw = $('waNum').value.trim(), mob = normMobile(raw), msg = waText(m), a = $('waGo');
+  $('waMsg').textContent = msg;
+  a.href = 'https://wa.me/' + (mob ? '91' + mob : '') + '?text=' + encodeURIComponent(msg);
+  a.classList.toggle('dis', !!(raw && !mob));
+  a.textContent = mob ? '💬 Open WhatsApp chat with ' + mob : '💬 Open WhatsApp (choose contact)';
+  $('waNote').textContent = raw && !mob ? 'Enter a 10-digit mobile number, or leave blank to pick the contact inside WhatsApp.' : '';
+}
+function openWa(m) {
+  state.waMemo = m;
+  $('waNum').value = m.mobile || state.mobiles[String(m.party || '').toLowerCase()] || '';
+  waUpdate(); showOv('ovWa');
+}
+$('waNum').addEventListener('input', waUpdate);
+$('waGo').addEventListener('click', function () {
+  var m = state.waMemo, mob = normMobile($('waNum').value), p = String(m.party || '').trim();
+  if (mob && p && p.toLowerCase() !== 'cash') { state.mobiles[p.toLowerCase()] = mob; ls.set('mt_mobiles', state.mobiles); }
+});
+$('waFile').onclick = function () { var m = state.waMemo; if (m) withPdf(function () { return memoPdf(m); }, sharePdf); };
+
+/* ========================================================= DAY BOOK */
+function setRange(q) {
+  var d = new Date(), f = new Date(d);
+  if (q === 'yday') { d.setDate(d.getDate() - 1); f = new Date(d); }
+  if (q === 'week') f.setDate(f.getDate() - 6);
+  if (q === 'month') f.setDate(1);
+  $('dbFrom').value = ymd(f); $('dbTo').value = ymd(d);
+}
+document.querySelector('#tabBook .qd').addEventListener('click', function (e) {
+  var q = e.target.getAttribute('data-q'); if (!q) return;
+  Array.prototype.forEach.call(this.children, function (b) { b.classList.toggle('sel', b === e.target); });
+  setRange(q); loadBook();
+});
+$('dbGo').onclick = function () { loadBook(); };
+/* v10: the Day Book appears at once (last copy + memos on this phone) and refreshes from the Sheet in the background */
+function bookCache() { if (!state.bookC) state.bookC = ls.get('mt_bookc', {}) || {}; return state.bookC; }
+function bookCacheSave(key, d) {
+  var c = bookCache(); c[key] = d;
+  var keys = Object.keys(c).sort(function (a, b) { return (c[b].fetched || 0) - (c[a].fetched || 0); });
+  keys.slice(6).forEach(function (k) { delete c[k]; });
+  try { localStorage.setItem('mt_bookc', JSON.stringify(c)); } catch (e) { /* not important */ }
+}
+function bookCacheClear() { state.bookC = {}; try { localStorage.removeItem('mt_bookc'); } catch (e) { /* ignore */ } }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function hhmm(t) { var d = new Date(t), h = d.getHours(); return pad2(h % 12 || 12) + ':' + pad2(d.getMinutes()) + ' ' + (h < 12 ? 'AM' : 'PM'); }
+function loadBook() {
+  if (!cfg.url) { openSetup(); return; }
+  var from = $('dbFrom').value, to = $('dbTo').value || from;
+  if (!from) { toast('Choose a date'); return; }
+  if (to < from) { toast('“To” date is before “From” date'); return; }
+  var pf = $('dbParty').value.trim(), key = from + '|' + to + '|' + pf.toLowerCase(), c = bookCache()[key];
+  var empty = { from: from, to: to, memos: [], count: 0, cancelled: 0, total: 0, parties: [], items: [] };
+  var seq = state.bookSeq = (state.bookSeq || 0) + 1;
+  if (c) renderBook(clone(c));
+  if (!navigator.onLine) {
+    if (!c) renderBook(Object.assign(empty, { offline: true }));
+    $('dbSync').hidden = false; $('dbSync').className = 'dbsync off';
+    $('dbSync').textContent = c ? '📴 Offline — Day Book as downloaded at ' + hhmm(c.fetched) + ', plus memos made on this phone.' : '📴 Offline';
+    return;
+  }
+  if (!c) renderBook(Object.assign(clone(empty), { loading: true }));
+  $('dbSync').hidden = false; $('dbSync').className = 'dbsync'; $('dbSync').textContent = '⟳ Updating from Google Sheet…';
+  api('daybook', { from: from, to: to, party: pf }).then(function (d) {
+    d.fetched = Date.now(); bookCacheSave(key, clone(d));
+    if (seq === state.bookSeq) { renderBook(d); $('dbSync').hidden = true; }
+  }).catch(function (e) {
+    if (seq !== state.bookSeq) return;
+    if (e.code === 'NET') {
+      if (!c) renderBook(Object.assign(clone(empty), { offline: true }));
+      $('dbSync').className = 'dbsync off'; $('dbSync').textContent = c ? '📴 Could not reach the Sheet — showing the copy from ' + hhmm(c.fetched) + '.' : '📴 Could not reach the Sheet.';
+    } else { $('dbSync').hidden = true; toast(e.message, 5000); }
+  });
+}
+function mergeQueued(d) {
+  var pf = $('dbParty').value.trim().toLowerCase(), qd = [], local = [];
+  qGet().forEach(function (e) { if (e.memo) local.push({ m: e.memo, queued: true, txn: e.txn }); });
+  // memos uploaded from this phone after this copy of the Day Book was downloaded
+  if (d.fetched) recentGet().forEach(function (m) { if (m.up > d.fetched && !m.edited && !m.cancelled) local.push({ m: m }); });
+  local.forEach(function (e) {
+    var m = e.m;
+    var day = m.date.split('-').reverse().join('-');
+    if (day < d.from || day > d.to || (pf && String(m.party).toLowerCase().indexOf(pf) < 0)) return;
+    if (d.memos.some(function (x) { return x.no === m.memoNo; })) return;
+    qd.push({ no: m.memoNo, day: day, date: m.date, time: m.time, party: m.party, n: m.lines.length, total: m.total, queued: !!e.queued, txn: e.txn });
+    d.count++; d.total = r2(d.total + m.total);
+    var pk = String(m.party).toLowerCase(), pp = d.parties.filter(function (x) { return String(x.party).toLowerCase() === pk; })[0];
+    if (!pp) { pp = { party: m.party, count: 0, total: 0 }; d.parties.push(pp); }
+    pp.count++; pp.total = r2(pp.total + m.total);
+    m.lines.forEach(function (l) {
+      var it = d.items.filter(function (x) { return x.p.toLowerCase() === l.p.toLowerCase() && String(x.u).toLowerCase() === String(l.u).toLowerCase(); })[0];
+      if (!it) { it = { p: l.p, u: l.u, q: 0, a: 0 }; d.items.push(it); }
+      it.q = Math.round((it.q + l.q) * 1000) / 1000; it.a = r2(it.a + l.a);
+    });
+  });
+  d.memos = d.memos.concat(qd); d.queued = qd.filter(function (x) { return x.queued; }).length;
+  return d;
+}
+function renderBook(d) {
+  d = mergeQueued(d);
+  state.book = d; state.bookParty = $('dbParty').value.trim();
+  var period = d.from === d.to ? d.from.split('-').reverse().join('-') : d.from.split('-').reverse().join('-') + ' to ' + d.to.split('-').reverse().join('-');
+  if (d.loading && !d.memos.length) { $('dbOut').innerHTML = '<div class="empty">Loading…</div>'; return; }
+  var h = (d.offline ? '<div class="offnote">📴 Offline — showing only memos saved on this phone that are waiting to upload. The full Day Book appears when internet is back.</div>' : '') +
+    (d.queued && !d.offline ? '<div class="offnote">⏳ Includes ' + d.queued + ' memo(s) saved on this phone that are not uploaded yet.</div>' : '') +
+    '<div class="tiles"><div><b>' + d.count + '</b><span>Memos' + (d.cancelled ? ' (+' + d.cancelled + ' cancelled)' : '') + '</span></div><div><b>' + inr(d.total).replace('.00', '') + '</b><span>Total</span></div><div><b>' + d.parties.length + '</b><span>Customers</span></div></div>';
+  h += '<div class="card"><div class="lh" style="margin:0 0 4px"><h2>Memos · ' + esc(period) + '</h2></div><div class="ml">';
+  h += d.memos.length ? d.memos.slice().reverse().map(function (m) {
+    var amt = m.cancelled ? '<span class="cx">' + inr(m.total) + '</span><span class="tag">CANCELLED</span>' : inr(m.total) + (m.queued ? '<span class="tag q">⏳ not uploaded</span>' : '');
+    return '<div class="m"><div class="d"><div><b' + (m.cancelled ? ' class="cx"' : '') + '>' + esc(m.party || 'Cash') + '</b> · ' + amt + (m.edited ? ' <span class="lr" style="color:var(--brand2)">edited</span>' : '') + '</div><div>' + esc(m.no) + ' · ' + esc(m.date) + (m.time ? ' ' + esc(m.time) : '') + ' · ' + m.n + ' item' + (m.n === 1 ? '' : 's') +
+      (m.cancelled && m.reason ? ' · ' + esc(m.reason) : '') + '</div></div><div class="acts2">' +
+      (m.cancelled ? '' : '<button class="lnk" data-wa="' + esc(m.no) + '" style="color:#1fa855">WhatsApp</button>') +
+      '<button class="lnk" data-sh="' + esc(m.no) + '">Share PDF</button><button class="lnk" data-dl="' + esc(m.no) + '">Download</button>' +
+      (m.cancelled || m.queued ? '' : '<button class="lnk" data-ed="' + esc(m.no) + '">Edit</button><button class="lnk" data-cx="' + esc(m.no) + '" style="color:var(--bad)">Cancel</button>') + '</div></div>';
+  }).join('') : '<div class="empty">No memos in this period.</div>';
+  h += '</div></div>';
+  if (d.memos.length) {
+    h += '<details class="box" open><summary>Customer-wise (' + d.parties.length + ')</summary><table class="tb"><tr><th>Customer</th><th class="r">Memos</th><th class="r">Amount</th></tr>' +
+      d.parties.map(function (p) { return '<tr><td>' + esc(p.party || 'Cash') + '</td><td class="r">' + p.count + '</td><td class="r">' + inr(p.total) + '</td></tr>'; }).join('') + '</table></details>';
+    h += '<details class="box"><summary>Item-wise (' + d.items.length + ')</summary><table class="tb"><tr><th>Item</th><th class="r">Qty</th><th class="r">Amount</th></tr>' +
+      d.items.map(function (it) { return '<tr><td>' + esc(it.p) + '</td><td class="r">' + fmtQ(it.q) + ' ' + esc(it.u) + '</td><td class="r">' + inr(it.a) + '</td></tr>'; }).join('') + '</table></details>';
+    h += '<div class="g2"><button class="btn pri" id="dbShare">📄 Share Day Book PDF</button><button class="btn sec" id="dbDown">⬇ Download</button></div>';
+  }
+  $('dbOut').innerHTML = h;
+  if ($('dbShare')) {
+    $('dbShare').onclick = function () { withPdf(function () { return makeBookPdf(state.book, state.bookParty); }, sharePdf); };
+    $('dbDown').onclick = function () { withPdf(function () { return makeBookPdf(state.book, state.bookParty); }, downloadPdf); };
+  }
+}
+function bookMemo(no) { return ((state.book || {}).memos || []).filter(function (m) { return m.no === no; })[0]; }
+function fetchMemo(no, then) {
+  var bm = bookMemo(no);
+  if (bm && bm.queued) { var e = qGet().filter(function (x) { return x.txn === bm.txn; })[0]; if (e) { then(e.memo); return; } }
+  var loc = recentFind(no);
+  if (bm && loc && !bm.edited && !bm.cancelled && !loc.cancelled && !loc.edited && Math.abs((loc.total || 0) - (bm.total || 0)) < 0.005 && (loc.lines || []).length === bm.n) { then(loc); return; }
+  busy(true);
+  api('memo', { memoNo: no }).then(then).catch(function (e) { toast(e.message, 4000); }).then(function () { busy(false); });
+}
+$('dbOut').addEventListener('click', function (e) {
+  var t = e.target, wa = t.getAttribute('data-wa'), cx = t.getAttribute('data-cx'), sh = t.getAttribute('data-sh'), dl = t.getAttribute('data-dl');
+  if (wa) { fetchMemo(wa, function (m) { state.lastPdf = null; openWa(m); }); return; }
+  var ed = t.getAttribute('data-ed'); if (ed) { fetchMemo(ed, startEdit); return; }
+  if (sh || dl) { fetchMemo(sh || dl, function (m) { state.lastPdf = null; withPdf(function () { return memoPdf(m); }, sh ? sharePdf : downloadPdf); }); return; }
+  if (cx) {
+    var m2 = bookMemo(cx); state.cancelNo = cx;
+    $('cxInfo').innerHTML = '<b>' + esc(m2.no) + '</b> · ' + esc(m2.date) + '<br>' + esc(m2.party || 'Cash') + ' · ' + inr(m2.total);
+    $('cxReason').value = ''; $('cxErr').textContent = ''; showOv('ovCancel');
+  }
+});
+$('cxGo').onclick = function () {
+  var no = state.cancelNo; if (!no) return;
+  busy(true);
+  api('cancel', { memoNo: no, reason: $('cxReason').value.trim() }).then(function () {
+    showOv('ovCancel', false); toast(no + ' cancelled');
+    var rc = recentFind(no); if (rc) { rc.cancelled = true; recentPut(rc); }
+    bookCacheClear(); loadBook();
+    Object.keys(state.lastBills).forEach(function (k) { delete state.lastBills[k]; });
+  }).catch(function (e) { $('cxErr').textContent = e.message; }).then(function () { busy(false); });
+};
+
+/* ============================================================ ITEMS TAB */
+function renderItems() {
+  var q = $('itSearch').value.trim(), list = q ? suggestItems(q).concat(state.items.filter(function (it) { return it.n.toLowerCase().indexOf(q.toLowerCase()) >= 0; })) : state.items.slice().sort(function (a, b) { return (b.f ? 1 : 0) - (a.f ? 1 : 0) || (b.c || 0) - (a.c || 0) || a.n.localeCompare(b.n); });
+  var seen = {}; list = list.filter(function (it) { if (seen[it.n]) return false; seen[it.n] = 1; return true; });
+  $('itInfo').textContent = state.items.length + ' saved item' + (state.items.length === 1 ? '' : 's') + '. Tap ⭐ to show an item as a quick button on the bill screen; tap an item to edit it.';
+  $('itList').innerHTML = list.length ? list.map(function (it) {
+    return '<div class="i" data-n="' + esc(it.n) + '"><button class="star' + (it.f ? '' : ' off') + '" data-star="' + esc(it.n) + '" title="Favourite">★</button><div class="d"><div><b>' + esc(it.n) + '</b></div><div>' + esc(it.u || 'no unit') + (it.r ? ' · last ₹' + it.r : '') + ' · billed ' + (it.c || 0) + '×' +
+      ((it.a || []).length ? ' · also heard as: ' + esc((it.a || []).join(', ')) : '') + '</div></div><span style="color:var(--muted)">›</span></div>';
+  }).join('') : '<div class="empty">' + (q ? 'No match.' : 'No items yet.') + '</div>';
+}
+$('itSearch').addEventListener('input', renderItems);
+$('itList').addEventListener('click', function (e) {
+  var st = e.target.getAttribute('data-star');
+  if (st) {
+    var it0 = state.items.filter(function (x) { return x.n === st; })[0]; if (!it0) return;
+    var nv = !it0.f; it0.f = nv; ls.set('mt_items', state.items); renderItems(); renderFavs();
+    itemOp('itemFav', { n: st, f: nv });
+    return;
+  }
+  var d = e.target.closest('[data-n]'); if (!d) return;
+  openItem(state.items.filter(function (x) { return x.n === d.getAttribute('data-n'); })[0]);
+});
+$('itNew').onclick = function () { openItem(null); };
+function openItem(it) {
+  state.editItem = { old: it ? it.n : '' };
+  $('ieTitle').textContent = it ? 'Edit item' : 'New item';
+  $('ieName').value = it ? it.n : $('itSearch').value.trim();
+  $('ieUnit').value = it ? it.u || '' : '';
+  $('ieRate').value = it && it.r ? it.r : '';
+  $('ieFav').checked = !!(it && it.f);
+  $('ieInfo').textContent = it ? 'Billed ' + (it.c || 0) + ' time(s).' + ((it.a || []).length ? ' Also recognised when spoken as: ' + it.a.join(', ') + '.' : '') : 'Tip: write the name exactly as it should print, e.g. “Haldi 100 G Sachet”.';
+  $('ieErr').textContent = ''; $('ieDel').hidden = !it;
+  showOv('ovItem');
+}
+$('ieUnitPick').onclick = function () { openUnit({ type: 'item' }); };
+$('ieName').addEventListener('change', function () { this.value = smartCase(this.value); });
+$('ieSave').onclick = function () {
+  var n = $('ieName').value.trim().replace(/\s+/g, ' '), u = normUnit($('ieUnit').value), r = $('ieRate').value.trim(), f = $('ieFav').checked;
+  if (!n) { $('ieErr').textContent = 'Enter the item name.'; return; }
+  if (r && !(num(r) >= 0)) { $('ieErr').textContent = 'Rate must be a number.'; return; }
+  var clash = state.items.filter(function (x) { return x.n.toLowerCase() === n.toLowerCase() && x.n.toLowerCase() !== state.editItem.old.toLowerCase(); })[0];
+  if (clash) { $('ieErr').textContent = '“' + clash.n + '” already exists.'; return; }
+  if (!cfg.url) { openSetup(); return; }
+  var it = state.editItem.old && state.items.filter(function (x) { return x.n === state.editItem.old; })[0];
+  if (it) { it.n = n; it.u = u; it.f = f; if (r !== '') it.r = num(r); it._n = null; }
+  else state.items.push({ n: n, u: u, r: r === '' ? 0 : num(r), c: 0, a: [], f: f });
+  if (u) learnUnit(u);
+  ls.set('mt_items', state.items); fillUnitList();
+  showOv('ovItem', false); renderItems(); renderFavs(); toast(navigator.onLine ? 'Item saved' : 'Item saved on this phone — goes to the Sheet when online');
+  itemOp('itemSave', { old: state.editItem.old, n: n, u: u, r: r === '' ? '' : num(r), f: f });
+};
+$('ieDel').onclick = function () {
+  var n = state.editItem.old; if (!n || !confirm('Delete “' + n + '” from the saved item list? Old memos are not affected.')) return;
+  state.items = state.items.filter(function (x) { return x.n !== n; }); ls.set('mt_items', state.items);
+  showOv('ovItem', false); renderItems(); renderFavs(); toast('Item deleted');
+  itemOp('itemDelete', { n: n });
+};
+
+/* ============================================================== TABS */
+$('tabs').addEventListener('click', function (e) {
+  var t = e.target.getAttribute('data-tab'); if (!t) return;
+  state.tab = t;
+  Array.prototype.forEach.call(this.children, function (b) { b.classList.toggle('sel', b.getAttribute('data-tab') === t); });
+  ['Bill', 'Book', 'Items'].forEach(function (x) { $('tab' + x).hidden = x !== t; });
+  $('dock').hidden = t !== 'Bill';
+  if (t !== 'Bill' && mic.want) micStop();
+  if (t === 'Book') { if (!$('dbFrom').value) { setRange('today'); document.querySelector('#tabBook [data-q=today]').classList.add('sel'); } loadBook(); }
+  if (t === 'Items') renderItems();
+  if (t === 'Bill') { renderFavs(); fitDock(); }
+  window.scrollTo(0, 0);
+});
+
+/* ============================================================ SETUP */
+function openSetup(err) {
+  $('phoneName').value = ls.get('mt_phone', '');
+  $('numInfo').textContent = 'Reserved memo numbers on this phone: ' + numbersLeft() + (peekNumber() ? ' (next ' + peekNumber() + ')' : '') + ' · Phone id ' + DEV;
+  $('cfgUrl').value = cfg.url || ''; $('cfgPin').value = cfg.pin || '';
+  $('cfgErr').textContent = err || ''; showOv('ovSetup');
+}
+$('btnSettings').onclick = function () { openSetup(); };
+$('cfgSave').onclick = function () {
+  var u = $('cfgUrl').value.trim().replace(/[?#].*$/, '').replace(/\/+$/, ''), p = $('cfgPin').value.trim();
+  u = u.replace(/\/macros\/u\/\d+\/s\//, '/macros/s/');
+  if (/\/dev$/.test(u)) { $('cfgErr').textContent = 'This is the test (/dev) URL. Use the Web app URL from Deploy → Manage deployments, ending in /exec.'; return; }
+  if (!/^https:\/\/script\.google\.com\/(a\/macros\/[^\/]+|macros)\/s\/[\w-]+\/exec$/.test(u)) { $('cfgErr').textContent = 'Paste the full Web App URL ending in /exec'; return; }
+  $('cfgUrl').value = u;
+  cfg = { url: u, pin: p }; ls.set('mt_cfg', cfg);
+  showOv('ovSetup', false); loadInit();
+};
+
+/* ============================================================ START */
+applyZoom(); fillUnitList(); render(); heard(''); updateNet(); loadInit();
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+</script>
+</body>
+</html>
